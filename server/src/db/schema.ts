@@ -2,15 +2,15 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
-  // 1. User Management (Admins & Nurses)
+  // 1. User Management
   users: defineTable({
     name: v.string(),
     email: v.string(),
     role: v.union(v.literal("admin"), v.literal("nurse")),
-    tokenIdentifier: v.string(), // For Auth integration (Clerk/Auth0)
+    tokenIdentifier: v.string(), 
   }).index("by_token", ["tokenIdentifier"]),
 
-  // 2. Patient Information (Managed by Head Nurse)
+  // 2. Patient Information
   patients: defineTable({
     name: v.string(),
     age: v.number(),
@@ -20,25 +20,25 @@ export default defineSchema({
     active: v.boolean(),
   }),
 
-  // 3. Medications (Linked to Patients)
+  // 3. Medications (Current prescriptions)
   medications: defineTable({
     patientId: v.id("patients"),
     name: v.string(),
     dosage: v.string(),
-    frequency: v.string(), // e.g., "Twice daily"
+    frequency: v.string(), 
   }).index("by_patient", ["patientId"]),
 
-  // 4. Shifts (The Geofenced Container)
+  // 4. Shifts (Geofenced Check-in)
   shifts: defineTable({
     nurseId: v.id("users"),
-    date: v.string(), // YYYY-MM-DD
-    startTime: v.number(), // Scheduled start timestamp
-    endTime: v.number(),   // Scheduled end timestamp
+    date: v.string(), 
+    startTime: v.number(), 
+    endTime: v.number(),   
     status: v.union(
-      v.literal("pending"),   // Assigned but not started
-      v.literal("active"),    // Geofence verified
-      v.literal("completed"), // Finished
-      v.literal("flagged")    // Geofence or time anomaly
+      v.literal("pending"),   
+      v.literal("active"),    
+      v.literal("completed"), 
+      v.literal("flagged")    
     ),
     checkInDetails: v.optional(v.object({
       time: v.number(),
@@ -48,15 +48,15 @@ export default defineSchema({
     })),
   }).index("by_nurse", ["nurseId"]).index("by_status", ["status"]),
 
-  // 5. Shift Assignments (Linking 1 Nurse/Shift to Many Patients)
+  // 5. Shift Assignments 
   assignments: defineTable({
     shiftId: v.id("shifts"),
     patientId: v.id("patients"),
     tasksCompleted: v.number(),
     totalTasks: v.number(),
-  }).index("by_shift", ["shiftId"]),
+  }).index("by_shift", ["shiftId"]).index("by_patient", ["patientId"]),
 
-  // 6. Clinical Vitals 
+  // 6. Clinical Vitals
   vitals: defineTable({
     patientId: v.id("patients"),
     nurseId: v.id("users"),
@@ -66,7 +66,18 @@ export default defineSchema({
     timestamp: v.number(),
   }).index("by_patient", ["patientId"]),
 
-  // 7. System Audit Logs 
+  // 7. NEW: Emergency SOS Triggers
+  emergencies: defineTable({
+    patientId: v.id("patients"),
+    nurseId: v.id("users"), // Nurse who triggered it
+    status: v.union(v.literal("active"), v.literal("resolved")),
+    triggeredAt: v.number(),
+    resolvedAt: v.optional(v.number()),
+    resolvedBy: v.optional(v.id("users")), // Admin/Head Nurse who resolved it
+    resolutionNotes: v.optional(v.string()),
+  }).index("by_status", ["status"]).index("by_patient", ["patientId"]),
+
+  // 8. System Audit Logs
   auditLogs: defineTable({
     userId: v.id("users"),
     action: v.string(), 
