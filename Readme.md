@@ -12,9 +12,10 @@ Project-Wingman/
 ├── server/          # Node.js + Express Backend
 ├── package.json     # Root configuration (Concurrently)
 └── .gitignore       # Root Git ignore rules
+```
 
 
-### Getting Started
+## Getting Started
 Follow these steps to get the development environment running on your local machine.
 
 1. Prerequisites
@@ -87,3 +88,4 @@ Once you save this file, run these commands to update your repo so your coworker
 git add README.md
 git commit -m "docs: add project readme and setup instructions"
 git push origin main
+```
