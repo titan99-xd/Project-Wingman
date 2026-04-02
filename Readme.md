@@ -81,11 +81,3 @@ The frontend is configured to use a proxy. Ensure your backend routes are called
 
 ---
 
-### Pro-tip for your GitHub:
-Once you save this file, run these commands to update your repo so your coworker sees the new instructions immediately:
-
-```bash
-git add README.md
-git commit -m "docs: add project readme and setup instructions"
-git push origin main
-```
