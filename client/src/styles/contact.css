@@ -1,0 +1,129 @@
+.contact-page {
+  min-height: 100vh; 
+   padding: 2rem;
+}
+
+
+/* -------------------------------
+   CONTACT FORM CONTAINER
+-------------------------------- */
+.contact-form {
+  max-width: 750px;
+  margin: 0 auto;
+  background: #ffffff; /* White form background */
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08); /* subtle shadow */
+  color: #111827; /* text color inside form */
+  border: 1px solid #e5e7eb;
+  animation: fadeIn 0.5s ease;
+  transition: all 0.3s ease;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* -------------------------------
+   FIELD ROWS
+-------------------------------- */
+.field-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.field-row label {
+  font-size: 0.9rem;
+  color: #4b5563; /* gray labels */
+  font-weight: 500;
+}
+
+/* -------------------------------
+   INPUTS & TEXTAREA
+-------------------------------- */
+.field-row input,
+.field-row textarea {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #d1d5db; /* light gray border */
+  font-size: 1rem;
+  background: #ffffff; /* white input background */
+  color: #111827; /* black text */
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.field-row input::placeholder,
+.field-row textarea::placeholder {
+  color: #9ca3af; /* subtle placeholder */
+}
+
+/* Hover & Focus */
+.field-row input:hover,
+.field-row textarea:hover {
+  border-color: #6366f1;
+}
+
+.field-row input:focus,
+.field-row textarea:focus {
+  border-color: #6366f1;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
+  background: #ffffff;
+  color: #111827;
+}
+
+/* -------------------------------
+   FORM MESSAGES
+-------------------------------- */
+.form-error {
+  color: #ef4444;
+  margin-bottom: 0.7rem;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease;
+}
+
+.form-success {
+  color: #16a34a;
+  margin-bottom: 0.7rem;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease;
+}
+
+/* -------------------------------
+   FORM BUTTON
+-------------------------------- */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-send {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  color: white;
+  padding: 0.7rem 1.5rem;
+  border-radius: 50px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
+  transition: all 0.3s ease;
+}
+
+.btn-send:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(99, 102, 241, 0.35);
+}
+
+.btn-send:active {
+  transform: scale(0.98);
+}
+
+.btn-send:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
