@@ -40,27 +40,15 @@ export default function Footer() {
             <h3 className="footer-heading">Quick Links</h3>
             <ul className="footer-links">
               <li><Link to="/" className="footer-link">Home</Link></li>
-              <li><Link to="/about" className="footer-link">About Me</Link></li>
-              <li><Link to="/portfolio" className="footer-link">Portfolio</Link></li>
-              <li><Link to="/contact" className="footer-link">Contact Me</Link></li>
+              <li><Link to="/Manager" className="footer-link">Manager</Link></li>
+              <li><Link to="/Tablet" className="footer-link">Tablet</Link></li>
+              <li><Link to="/Security" className="footer-link">Security</Link></li>
               
             </ul>
           </div>
-
-          {/* Services */}
-          <div className="footer-column">
-            <h3 className="footer-heading">My Experience</h3>
-            <ul className="footer-links">
-              <li><a href="#services" className="footer-link">Web Development</a></li>
-              <li><a href="#services" className="footer-link">Mobile Apps</a></li>
-              <li><a href="#services" className="footer-link">UI/UX Design</a></li>
-              <li><a href="#services" className="footer-link">IT Consulting</a></li>
-            </ul>
-          </div>
-
           {/* Contact Info */}
           <div className="footer-column">
-            <h3 className="footer-heading">Contact Me</h3>
+            <h3 className="footer-heading">Contact Us</h3>
             <ul className="footer-contact">
               <li className="contact-item">
                 <span className="contact-icon">
