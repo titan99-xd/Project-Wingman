@@ -1,0 +1,102 @@
+
+
+/* Floating container */
+.floating-contact {
+  position: fixed;
+  bottom: 2rem;       /* space from bottom */
+  right: 2rem;        /* space from right */
+  z-index: 1000;
+  opacity: 0.9;
+  transition: opacity 0.3s;
+}
+
+.floating-contact:hover {
+  opacity: 1;
+}
+
+/* Main CTA button */
+.cta-button {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: white;
+  padding: 0.75rem 1.75rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 16px rgba(65, 105, 225, 0.25);
+}
+
+.cta-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cta-button:hover::before {
+  opacity: 1;
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(65, 105, 225, 0.35);
+}
+
+.cta-text,
+.cta-icon {
+  position: relative;
+  z-index: 1;
+  color:aliceblue;
+}
+
+.cta-icon {
+  display: flex;
+  align-items: center;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cta-button:hover .cta-icon {
+  transform: translateX(4px);
+}
+
+.cta-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s;
+}
+
+.cta-button:hover .cta-shimmer {
+  left: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .floating-contact {
+    bottom: 1rem;
+    right: 1rem;
+  }
+
+  .cta-button {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.875rem;
+  }
+
+  .cta-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+}
