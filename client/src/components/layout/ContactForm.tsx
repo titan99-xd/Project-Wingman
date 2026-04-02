@@ -1,5 +1,5 @@
 import React, { useState, type JSX } from "react";
-import "../styles/contactform.css";
+import "../../styles/contactform.css";
 
 type FormState = {
   name: string;

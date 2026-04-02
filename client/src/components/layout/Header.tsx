@@ -71,13 +71,6 @@ export default function Header() {
             <span className="nav-text">Blog</span>
             <span className="nav-indicator"></span>
           </Link>
-          <Link 
-            to="/contact" 
-            className={`nav-link ${isActive('/contact') ? 'active' : ''}`}
-          >
-            <span className="nav-text">Contact Me</span>
-            <span className="nav-indicator"></span>
-          </Link>
         </nav>
         {/* Mobile Menu Button */}
         <button 
