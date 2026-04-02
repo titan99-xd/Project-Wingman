@@ -6,7 +6,7 @@ const ContactButton: React.FC = () => {
   return (
     <div className="floating-contact">
       <Link to="/contact" className="cta-button">
-        <span className="cta-text">Contact Me</span>
+        <span className="cta-text">Contact Us</span>
         <span className="cta-icon">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path

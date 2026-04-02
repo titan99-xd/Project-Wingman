@@ -9,5 +9,6 @@ export default function Home() {  return (
       <Link to="/about">Go to About Page</Link>
       <Footer />
     </div>
+    
   )
 }
