@@ -17,6 +17,7 @@ export default defineSchema({
     sex: v.union(v.literal("Male"), v.literal("Female"), v.literal("Other")),
     medicalHistory: v.string(),
     roomNumber: v.string(),
+    status: v.string(), 
     active: v.boolean(),
   }),
 
