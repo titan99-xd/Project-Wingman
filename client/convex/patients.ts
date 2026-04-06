@@ -3,7 +3,7 @@ import { v } from "convex/values";
 
 /**
  * ADMIT PATIENT
- * Adds a new patient to the ward with a specific triage status.
+ * Adds a new patient to the ward and logs the event with the patient's name.
  */
 export const admitPatient = mutation({
   args: { 
@@ -15,6 +15,7 @@ export const admitPatient = mutation({
     status: v.string(), 
   },
   handler: async (ctx, args) => {
+    // 1. Insert the patient into the 'patients' table
     const patientId = await ctx.db.insert("patients", {
       name: args.name,
       age: args.age,
@@ -25,10 +26,11 @@ export const admitPatient = mutation({
       active: true, 
     });
 
-    // CLINICAL AUDIT: Log the admission
+    // 2. CLINICAL AUDIT: Log the admission with the human-readable name
     await ctx.db.insert("auditLogs", {
       action: "PATIENT_ADMITTED",
       targetId: patientId,
+      patientName: args.name, // Captured for the Security Ledger
       timestamp: Date.now(),
       userId: "SYSTEM", 
       metadata: { triage: args.status },
@@ -40,7 +42,7 @@ export const admitPatient = mutation({
 
 /**
  * GET ACTIVE PATIENTS
- * Pulls all patients currently admitted to the ward.
+ * Pulls all patients currently admitted to the ward for the Sidebar.
  */
 export const getActivePatients = query({
   handler: async (ctx) => {
@@ -54,15 +56,22 @@ export const getActivePatients = query({
 
 /**
  * DISCHARGE PATIENT
+ * Sets 'active' to false and records the event in the audit trail.
  */
 export const dischargePatient = mutation({
   args: { patientId: v.id("patients") },
   handler: async (ctx, args) => {
+    // 1. Fetch the patient record to get their name before we update them
+    const patient = await ctx.db.get(args.patientId);
+    
+    // 2. Set active to false (Archive)
     await ctx.db.patch(args.patientId, { active: false });
     
+    // 3. Log the discharge for the audit trail
     await ctx.db.insert("auditLogs", {
       action: "PATIENT_DISCHARGED",
       targetId: args.patientId,
+      patientName: patient?.name || "Unknown Patient",
       timestamp: Date.now(),
       userId: "SYSTEM",
       metadata: { reason: "Standard Discharge" },
@@ -72,13 +81,13 @@ export const dischargePatient = mutation({
 
 /**
  * GET AUDIT LOGS
- * Required for the Security & Audit page
+ * Required for the Security & Audit page.
  */
 export const getAuditLogs = query({
   handler: async (ctx) => {
     return await ctx.db
       .query("auditLogs")
       .order("desc") 
-      .take(50);     
+      .take(50); // Limits to last 50 for better performance during demo
   },
 });

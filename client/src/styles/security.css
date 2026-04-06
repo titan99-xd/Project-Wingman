@@ -1,0 +1,179 @@
+/* --- SECURITY PAGE LAYOUT --- */
+.security-page {
+  padding: 2rem 3rem;
+  max-width: 1300px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.security-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 1.5rem;
+}
+
+.header-info h1 {
+  font-size: 2.2rem;
+  color: #0f172a;
+  margin: 0 0 0.5rem 0;
+  font-weight: 800;
+}
+
+.header-info p {
+  color: #64748b;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* --- LIVE STATUS INDICATOR --- */
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f1f5f9;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #475569;
+  letter-spacing: 1px;
+}
+
+.pulse {
+  width: 10px;
+  height: 10px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
+  animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* --- THE AUDIT TABLE --- */
+.audit-card {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.audit-table th {
+  background: #f8fafc;
+  padding: 1.2rem 1.5rem;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.audit-table td {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid #f8fafc;
+  font-size: 0.95rem;
+  color: #1e293b;
+}
+
+.audit-table tr:hover {
+  background-color: #fbfcfe;
+}
+
+/* --- LOG SPECIFIC STYLES --- */
+.log-time {
+  color: #64748b;
+  font-family: 'JetBrains Mono', monospace; /* Use a mono font if available */
+  font-size: 0.85rem;
+}
+
+.log-user {
+  font-weight: 600;
+  color: #334155;
+}
+
+.log-id code {
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.log-status {
+  color: #10b981;
+  font-weight: 800;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+/* --- ACTION TAGS --- */
+.action-tag {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.action-tag.vital {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.action-tag.admin {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+/* Empty State */
+.no-logs {
+  text-align: center;
+  padding: 4rem !important;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.patient-name-container {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.log-id-sub {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  letter-spacing: 0.5px;
+}
+
+.detail-pill {
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-family: monospace;
+  color: #475569;
+}
+
+.detail-none {
+  color: #cbd5e1;
+}
