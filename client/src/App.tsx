@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
-// Layout
+// Layout Components
 import Header from "./components/layout/Header";
-import Footer from "./components/layout/Footer"; // Added this
+import Footer from "./components/layout/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 import ContactButton from "./components/ui/contact-me-btn";
 
@@ -14,29 +14,37 @@ import Security from "./pages/Security";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 
-import "./styles/app.css";
+import "./App.css";
 
 function LayoutWrapper() {
   const location = useLocation();
 
-  // Hide the floating contact button on clinical/admin pages to keep the UI clean
-  const isClinicalRoute = 
-    location.pathname.startsWith("/Manager") || 
-    location.pathname.startsWith("/Tablet") ||
-    location.pathname.startsWith("/Security");
+  /**
+   * THE GATEKEEPER LOGIC
+   * This handles /Manager, /manager, and /ManAgEr automatically.
+   * It also tells the app when to hide "public" marketing elements.
+   */
+  const isClinicalRoute = [
+    "/manager", 
+    "/tablet", 
+    "/security"
+  ].some(route => location.pathname.toLowerCase().startsWith(route));
 
   return (
     <div className="app-container">
       <ScrollToTop />
 
-      <Header />
+      {/* CRITICAL FIX: Passing 'isClinical' to the Header. 
+         Open your Header.tsx and make sure it accepts this prop! 
+      */}
+      <Header isClinical={isClinicalRoute} />
 
-      {/* Show floating contact button only on public Home/Contact/Privacy pages */}
+      {/* Show floating contact button only on public pages (Home/Contact) */}
       {!isClinicalRoute && <ContactButton />}
 
       <main className="app-main">
         <Routes>
-          {/* Sentryx Clinical Routes */}
+          {/* Sentryx Clinical/Admin Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/Manager" element={<Manager />} />
           <Route path="/Tablet" element={<Tablet />} />
@@ -48,7 +56,10 @@ function LayoutWrapper() {
         </Routes>
       </main>
 
-      <Footer /> {/* Added this back to the bottom */}
+      {/* CLEAN UI FIX: Hide the big footer on clinical pages 
+         so nurses can see more patient data. 
+      */}
+      {!isClinicalRoute && <Footer />}
     </div>
   );
 }

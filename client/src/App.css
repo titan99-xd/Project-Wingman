@@ -1,0 +1,491 @@
+/* ===================================
+   DEBUG: If you see this red line, CSS is working!
+   Once confirmed, you can delete this line.
+   =================================== */
+.app-container { border-top: 5px solid red !important; }
+
+/* ===================================
+   1. DESIGN TOKENS & GLOBALS
+   =================================== */
+:root {
+  --color-primary: #4169E1;
+  --color-secondary: #00BFA6;
+  --color-light: #f8fafc;
+  --color-dark: #1a202c;
+  --color-white: #ffffff;
+  --color-border: #e2e8f0;
+  
+  --status-critical: #dc2626;
+  --status-unstable: #ff7f50;
+  --status-stable: #00BFA6;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background-color: var(--color-light);
+  color: var(--color-dark);
+  min-height: 100vh;
+  overflow-x: hidden; /* Prevents unwanted horizontal scrolling */
+}
+
+/* ===================================
+   2. MASTER LAYOUT (The Overlap Fix)
+   =================================== */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.app-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1280px; /* The "Lane" width */
+  margin: 0 auto;    /* Centers the content */
+  
+  /* THE MAGIC FIX: Pushes content below the fixed header */
+  padding-top: 140px !important; 
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 5rem;
+  
+  position: relative;
+  z-index: 1;
+  animation: pageFadeIn 0.5s ease-out;
+}
+
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===================================
+   3. FOOTER CENTERING (The Halfway Fix)
+   =================================== */
+.footer {
+  width: 100% !important;
+  display: block !important;
+  background-color: var(--color-white) !important;
+  border-top: 1px solid var(--color-border) !important;
+  margin-top: auto !important; /* Pushes to bottom */
+  padding: 4rem 0 2rem 0 !important;
+}
+
+.footer-container {
+  /* This MUST match the max-width of .app-main to stay aligned */
+  max-width: 1280px !important; 
+  width: 100% !important;
+  margin: 0 auto !important; /* FORCES Centering on screen */
+  padding: 0 2rem !important;
+}
+
+.footer-main {
+  display: grid !important;
+  /* Forces the 3 columns to span the full 1280px width */
+  grid-template-columns: repeat(3, 1fr) !important; 
+  gap: 3rem !important;
+  width: 100% !important;
+}
+
+.footer-bottom-content {
+  display: flex !important;
+  justify-content: space-between !important; /* Rights Left, Privacy Right */
+  align-items: center !important;
+  width: 100% !important;
+  padding-top: 2rem !important;
+  margin-top: 2rem !important;
+  border-top: 1px solid var(--color-border) !important;
+}
+
+/* ===================================
+   4. MANAGER PAGE (Intake & Directory)
+   =================================== */
+.manager-page {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .manager-page { grid-template-columns: 1fr; }
+}
+
+.admission-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--color-border);
+}
+
+.form-group { margin-bottom: 1.5rem; }
+.form-group label { 
+  display: block; 
+  font-weight: 700; 
+  margin-bottom: 0.6rem; 
+  font-size: 0.9rem;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  font-size: 1rem;
+  background: #fff;
+  color: #1a202c !important; /* Fix for invisible text */
+}
+
+.admit-btn {
+  width: 100%;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 1.2rem;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admit-btn:hover { background: #3558c8; transform: translateY(-1px); }
+
+/* ===================================
+   5. NURSE TABLET VIEW
+   =================================== */
+.tablet-container {
+  display: flex;
+  height: 75vh;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border);
+}
+
+.tablet-sidebar {
+  width: 380px;
+  border-right: 1px solid var(--color-border);
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.tablet-patient-card {
+  padding: 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  display: flex;
+  gap: 1.2rem;
+  transition: background 0.2s;
+}
+
+.tablet-patient-card.active { background: #f0f7ff; }
+
+.card-indicator { width: 8px; border-radius: 10px; }
+.critical .card-indicator { background: var(--status-critical); }
+.stable .card-indicator { background: var(--status-stable); }
+
+.tablet-main { flex: 1; padding: 3rem; background: #fafbfc; }
+
+/* ===================================
+   6. STATUS BADGES & UTILS
+   =================================== */
+.status-badge {
+  padding: 0.4rem 1rem;
+  border-radius: 30px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.status-badge.critical { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+.status-badge.stable { background: #ccfbf1; color: #0f766e; border: 1px solid #99f6e4; }
+
+/* ===================================
+   THE FINAL FOOTER SPREAD
+   =================================== */
+
+.footer-container {
+  max-width: 1280px !important; /* Matches your Header exactly */
+  margin: 0 auto !important;
+  width: 100% !important;
+  padding: 0 2rem !important;
+}
+
+.footer-main {
+  display: grid !important;
+  /* Forces 3 columns to share the 1280px space equally */
+  grid-template-columns: 1fr 1fr 1fr !important; 
+  width: 100% !important;
+  gap: 2rem !important;
+}
+
+/* Force each column to align its own text to the left */
+.footer-column {
+  text-align: left !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
+/* This pushes the Copyright left and Privacy right */
+.footer-bottom-content {
+  display: flex !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  max-width: 1280px !important;
+  margin: 0 auto !important;
+}
+
+/* ===================================
+   7. TABLET RESPONSIVENESS (1024px)
+   =================================== */
+@media (max-width: 1024px) {
+  .app-main {
+    padding-top: 120px !important;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  /* Manager: Stack the Intake Form on top of the Ward Directory */
+  .manager-page {
+    grid-template-columns: 1fr !important;
+    gap: 2rem;
+  }
+
+  /* Tablet View: Shift from side-by-side to a focused list */
+  .tablet-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .tablet-sidebar {
+    width: 100% !important;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    max-height: 300px;
+    overflow-y: auto;
+  }
+}
+
+/* ===================================
+   8. MOBILE RESPONSIVENESS (768px)
+   =================================== */
+@media (max-width: 768px) {
+  /* Header: Hide the Hub button text to save space */
+  .cta-text { display: none; }
+  .cta-button { padding: 0.8rem; border-radius: 50%; }
+
+  /* Footer: Stack the 3 columns vertically */
+  .footer-main {
+    grid-template-columns: 1fr !important;
+    text-align: center !important;
+    gap: 3rem !important;
+  }
+
+  .footer-column {
+    align-items: center !important;
+  }
+
+  .footer-social {
+    justify-content: center !important;
+  }
+
+  /* Bottom Bar: Stack Copyright and Privacy */
+  .footer-bottom-content {
+    flex-direction: column !important;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  /* Content: Reduce padding for small screens */
+  .app-main {
+    padding-top: 100px !important;
+  }
+
+  h1 { font-size: 2rem !important; }
+}
+
+/* ===================================
+   IPAD & TABLET HEADER FIX (1024px)
+   =================================== */
+
+@media (max-width: 1100px) {
+  /* 1. Prevent the "Emergency Hub" from squashing the links */
+  .desktop-nav {
+    gap: 1rem !important; /* Narrower gaps between links */
+  }
+
+  .nav-text {
+    font-size: 0.9rem; /* Slightly smaller text */
+  }
+
+  /* 2. Hide that leaked "Sentryx Menu" text in the header */
+  .mobile-nav, 
+  .mobile-nav-content {
+    display: none; /* Keep it hidden until the hamburger is clicked */
+  }
+  
+  /* Show the mobile nav ONLY when the 'open' class is added */
+  .mobile-nav.open {
+    display: flex !important;
+  }
+}
+
+/* ===================================
+   HEADER LAYOUT CLEANUP
+   =================================== */
+
+.header-container {
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* Logo | Nav | CTA Group */
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Ensure the Sentryx Menu doesn't float into the layout */
+.sentryx-menu, 
+.mobile-nav-header {
+    position: fixed; /* Take it out of the normal flow */
+    visibility: hidden;
+}
+
+.mobile-nav.open .mobile-nav-header {
+    visibility: visible;
+    position: relative;
+}
+
+@media (max-width: 1024px) {
+  .footer-bottom {
+    margin-bottom: 5rem; /* Pushes the legal bar up so it doesn't hide behind the blue button */
+  }
+}
+/* ===================================
+   MANAGER PAGE - DASHBOARD LAYOUT
+   =================================== */
+
+.manager-page {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2rem !important;
+  width: 100% !important;
+}
+
+/* 1. THE TOP HEADER SECTION */
+.manager-header {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.manager-header h1 {
+  font-size: 2.5rem !important;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
+}
+
+.manager-header p {
+  color: #718096;
+  font-size: 1.1rem;
+}
+
+/* 2. THE 2-COLUMN GRID */
+.manager-grid {
+  display: grid !important;
+  grid-template-columns: 450px 1fr !important; /* Fixed width form, flexible directory */
+  gap: 2.5rem !important;
+  align-items: start !important;
+}
+
+/* 3. CARD STYLING */
+.admission-card, .directory-card {
+  background: white !important;
+  border-radius: 24px !important;
+  padding: 2.5rem !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid #edf2f7 !important;
+}
+
+/* Ensure the Directory card stretches to match the intake card's height style */
+.directory-card {
+  min-height: 400px;
+}
+
+/* 4. FORM FIELD CLEANUP (Fixing the Sex/Age/Room inputs) */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* MOBILE FIX FOR MANAGER */
+@media (max-width: 1024px) {
+  .manager-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* ===================================
+   MANAGER PAGE - WIDE STACKED LAYOUT
+   =================================== */
+
+.manager-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Keep them centered */
+  width: 100%;
+  padding-bottom: 4rem;
+}
+
+/* 1. Make the cards take up most of the screen width */
+.admission-card, 
+.directory-card {
+  width: 95% !important;        /* Fill 95% of the screen width */
+  max-width: 1200px !important;  /* But don't let it get ridiculously huge on ultra-wide monitors */
+  background: white;
+  border-radius: 24px;
+  padding: 3rem;                 /* Increased internal padding for a "pro" look */
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+  border: 1px solid #edf2f7;
+}
+
+/* 2. Fix the header alignment to match the wider cards */
+.manager-header {
+  width: 95%;
+  max-width: 1200px;
+  margin: 0 auto 2rem auto;
+  text-align: left;
+}
+
+/* 3. Ensure the form fields inside look good when wide */
+.form-group {
+  margin-bottom: 2rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+/* 4. Fix for the small inputs (Age, Sex, Room) to stay neat */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+}
+
+/* 5. Directory specific: Make sure it feels "full" even when empty */
+.directory-card {
+  min-height: 350px;
+}
