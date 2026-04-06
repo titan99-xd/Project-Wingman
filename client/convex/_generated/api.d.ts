@@ -9,6 +9,7 @@
  */
 
 import type * as patients from "../patients.js";
+import type * as vitals from "../vitals.js";
 
 import type {
   ApiFromModules,
@@ -18,6 +19,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   patients: typeof patients;
+  vitals: typeof vitals;
 }>;
 
 /**

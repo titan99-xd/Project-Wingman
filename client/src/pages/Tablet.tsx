@@ -1,29 +1,88 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import type { Id } from "../../convex/_generated/dataModel";
 import "../styles/tablet.css";
 
 export default function Tablet() {
+  // 1. CONVEX HOOKS
   const patients = useQuery(api.patients.getActivePatients);
   const addVitalMutation = useMutation(api.vitals.addVitals);
   
-  const [selectedPatientId, setSelectedPatientId] = useState<any>(null);
+  // 2. COMPONENT STATE
+  const [selectedPatientId, setSelectedPatientId] = useState<Id<"patients"> | null>(null);
   const [vitalInput, setVitalInput] = useState({ hr: "", bp: "", spo2: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // 3. AUTO-SELECT FIRST PATIENT
+  useEffect(() => {
+    if (patients && patients.length > 0 && !selectedPatientId) {
+      setSelectedPatientId(patients[0]._id);
+    }
+  }, [patients, selectedPatientId]);
+
+  // Find the full patient object for the selected ID
   const selectedPatient = patients?.find(p => p._id === selectedPatientId);
 
+  // 4. LOGIC: SAVE VITALS TO CONVEX
   const handleSaveVitals = async () => {
     if (!selectedPatientId) return;
-    
+    if (!vitalInput.hr && !vitalInput.bp && !vitalInput.spo2) {
+      alert("Please enter at least one vital sign value.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    const timestamp = Date.now();
+    const nurseId = "SYSTEM"; // Placeholder until Auth is implemented
+
     try {
-      if (vitalInput.hr) await addVitalMutation({ patientId: selectedPatientId, type: "HR", value: vitalInput.hr, unit: "bpm" });
-      if (vitalInput.bp) await addVitalMutation({ patientId: selectedPatientId, type: "BP", value: vitalInput.bp, unit: "mmHg" });
-      if (vitalInput.spo2) await addVitalMutation({ patientId: selectedPatientId, type: "SpO2", value: vitalInput.spo2, unit: "%" });
+      // Create an array of promises to run mutations in parallel
+      const mutations = [];
+
+      if (vitalInput.hr) {
+        mutations.push(addVitalMutation({ 
+          patientId: selectedPatientId, 
+          nurseId,
+          type: "HR", 
+          value: vitalInput.hr, 
+          unit: "bpm",
+          timestamp 
+        }));
+      }
+
+      if (vitalInput.bp) {
+        mutations.push(addVitalMutation({ 
+          patientId: selectedPatientId, 
+          nurseId,
+          type: "BP", 
+          value: vitalInput.bp, 
+          unit: "mmHg",
+          timestamp 
+        }));
+      }
+
+      if (vitalInput.spo2) {
+        mutations.push(addVitalMutation({ 
+          patientId: selectedPatientId, 
+          nurseId,
+          type: "SpO2", 
+          value: vitalInput.spo2, 
+          unit: "%",
+          timestamp 
+        }));
+      }
+
+      await Promise.all(mutations);
       
+      // Reset inputs and notify user
       setVitalInput({ hr: "", bp: "", spo2: "" });
-      alert("Vitals synchronized to Sentryx Cloud");
+      alert(`Observations for ${selectedPatient?.name} synchronized to Sentryx Cloud.`);
     } catch (err) {
-      console.error(err);
+      console.error("Submission Error:", err);
+      alert("Error: Data does not match clinical schema. Check console.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -60,9 +119,13 @@ export default function Tablet() {
             <header className="deck-header">
               <div className="patient-profile">
                 <h1>{selectedPatient.name}</h1>
-                <p>History: {selectedPatient.medicalHistory}</p>
+                <p className="medical-history">
+                  <strong>Clinical History:</strong> {selectedPatient.medicalHistory}
+                </p>
               </div>
-              <button className="sos-btn">TRIGGER SOS</button>
+              <button className="sos-btn" onClick={() => alert("SOS Triggered. Head Nurse notified.")}>
+                TRIGGER SOS
+              </button>
             </header>
 
             <div className="vitals-grid">
@@ -81,7 +144,7 @@ export default function Tablet() {
                   type="text" 
                   value={vitalInput.bp} 
                   onChange={(e) => setVitalInput({...vitalInput, bp: e.target.value})} 
-                  placeholder="120/80"
+                  placeholder="0/0"
                 />
               </div>
               <div className="vital-input-card">
@@ -95,13 +158,20 @@ export default function Tablet() {
               </div>
             </div>
 
-            <button className="save-vitals-btn" onClick={handleSaveVitals}>
-              Submit Observations
+            <button 
+              className={`save-vitals-btn ${isSubmitting ? 'loading' : ''}`} 
+              onClick={handleSaveVitals}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Synchronizing..." : "Submit Observations"}
             </button>
           </div>
         ) : (
           <div className="empty-deck">
-            <p>Select a patient card to begin observations</p>
+            <div className="empty-state-content">
+              <span className="empty-icon">📋</span>
+              <p>Select a patient card from the ward list to begin clinical observations.</p>
+            </div>
           </div>
         )}
       </main>
