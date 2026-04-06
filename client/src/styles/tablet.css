@@ -213,3 +213,64 @@
 
 .empty-state-content { text-align: center; color: #94a3b8; }
 .empty-icon { font-size: 4rem; display: block; margin-bottom: 1rem; opacity: 0.5; }
+
+/* --- VITALS HISTORY STYLING --- */
+.vitals-history-section {
+  margin-top: 3rem;
+  padding: 2rem;
+  background: #fdfdfd;
+  border-radius: 20px;
+  border: 1px solid #edf2f7;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.live-sync-indicator {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #10b981;
+  background: #ecfdf5;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 1px;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th {
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #94a3b8;
+  padding: 1rem;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.history-table td {
+  padding: 1.2rem 1rem;
+  border-bottom: 1px solid #f8fafc;
+  font-size: 0.95rem;
+}
+
+/* Type Tags */
+.type-tag {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+.type-tag.hr { background: #fee2e2; color: #ef4444; }
+.type-tag.bp { background: #e0e7ff; color: #4338ca; }
+.type-tag.spo2 { background: #dcfce7; color: #15803d; }
+
+.time-cell { color: #64748b; font-weight: 500; }
+.unit { font-size: 0.75rem; color: #94a3b8; }
+.nurse-id code { background: #f1f5f9; padding: 2px 5px; border-radius: 4px; }

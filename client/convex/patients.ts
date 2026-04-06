@@ -12,7 +12,7 @@ export const admitPatient = mutation({
     sex: v.union(v.literal("Male"), v.literal("Female"), v.literal("Other")),
     medicalHistory: v.string(),
     roomNumber: v.string(),
-    status: v.string(), // "Stable", "Unstable", or "Critical"
+    status: v.string(), 
   },
   handler: async (ctx, args) => {
     const patientId = await ctx.db.insert("patients", {
@@ -22,7 +22,7 @@ export const admitPatient = mutation({
       medicalHistory: args.medicalHistory,
       roomNumber: args.roomNumber,
       status: args.status,
-      active: true, // Patient is now live in the ward
+      active: true, 
     });
 
     // CLINICAL AUDIT: Log the admission
@@ -30,7 +30,7 @@ export const admitPatient = mutation({
       action: "PATIENT_ADMITTED",
       targetId: patientId,
       timestamp: Date.now(),
-      userId: "SYSTEM" as any, 
+      userId: "SYSTEM", 
       metadata: { triage: args.status },
     });
 
@@ -47,28 +47,38 @@ export const getActivePatients = query({
     return await ctx.db
       .query("patients")
       .filter((q) => q.eq(q.field("active"), true))
-      .order("desc") // Shows newest admissions first
+      .order("desc") 
       .collect();
   },
 });
 
 /**
  * DISCHARGE PATIENT
- * Sets active to false. This moves the patient to "history" 
- * without deleting their medical data.
  */
 export const dischargePatient = mutation({
   args: { patientId: v.id("patients") },
   handler: async (ctx, args) => {
     await ctx.db.patch(args.patientId, { active: false });
     
-    // Log the discharge for the audit trail
     await ctx.db.insert("auditLogs", {
       action: "PATIENT_DISCHARGED",
       targetId: args.patientId,
       timestamp: Date.now(),
-      userId: "SYSTEM" as any,
+      userId: "SYSTEM",
       metadata: { reason: "Standard Discharge" },
     });
+  },
+});
+
+/**
+ * GET AUDIT LOGS
+ * Required for the Security & Audit page
+ */
+export const getAuditLogs = query({
+  handler: async (ctx) => {
+    return await ctx.db
+      .query("auditLogs")
+      .order("desc") 
+      .take(50);     
   },
 });
