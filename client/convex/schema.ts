@@ -17,7 +17,7 @@ export default defineSchema({
     sex: v.union(v.literal("Male"), v.literal("Female"), v.literal("Other")),
     medicalHistory: v.string(),
     roomNumber: v.string(),
-    status: v.string(), 
+    status: v.string(), // Confirmed: This allows "Stable", "Unstable", etc.
     active: v.boolean(),
   }),
 
@@ -67,20 +67,21 @@ export default defineSchema({
     timestamp: v.number(),
   }).index("by_patient", ["patientId"]),
 
-  // 7. NEW: Emergency SOS Triggers
+  // 7. Emergency SOS Triggers
   emergencies: defineTable({
     patientId: v.id("patients"),
-    nurseId: v.id("users"), // Nurse who triggered it
+    nurseId: v.id("users"), 
     status: v.union(v.literal("active"), v.literal("resolved")),
     triggeredAt: v.number(),
     resolvedAt: v.optional(v.number()),
-    resolvedBy: v.optional(v.id("users")), // Admin/Head Nurse who resolved it
+    resolvedBy: v.optional(v.id("users")), 
     resolutionNotes: v.optional(v.string()),
   }).index("by_status", ["status"]).index("by_patient", ["patientId"]),
 
   // 8. System Audit Logs
   auditLogs: defineTable({
-    userId: v.id("users"),
+    // FIX: Changed from v.id("users") to v.string() to allow "SYSTEM" logs
+    userId: v.string(),
     action: v.string(), 
     targetId: v.string(), 
     timestamp: v.number(),
