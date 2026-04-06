@@ -60,7 +60,7 @@ export default defineSchema({
   // 6. Clinical Vitals
   vitals: defineTable({
     patientId: v.id("patients"),
-    nurseId: v.id("users"),
+    nurseId: v.string(),
     type: v.union(v.literal("BP"), v.literal("HR"), v.literal("Temp"), v.literal("SpO2")),
     value: v.string(),
     unit: v.string(),
