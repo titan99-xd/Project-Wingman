@@ -2,7 +2,7 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
-  // 1. User Management
+  // 1. User Management (Staff Profiles)
   users: defineTable({
     name: v.string(),
     email: v.string(),
@@ -17,11 +17,11 @@ export default defineSchema({
     sex: v.union(v.literal("Male"), v.literal("Female"), v.literal("Other")),
     medicalHistory: v.string(),
     roomNumber: v.string(),
-    status: v.string(), // Confirmed: This allows "Stable", "Unstable", etc.
+    status: v.string(), // "Stable", "Unstable", "Critical"
     active: v.boolean(),
   }),
 
-  // 3. Medications (Current prescriptions)
+  // 3. Medications
   medications: defineTable({
     patientId: v.id("patients"),
     name: v.string(),
@@ -29,7 +29,7 @@ export default defineSchema({
     frequency: v.string(), 
   }).index("by_patient", ["patientId"]),
 
-  // 4. Shifts (Geofenced Check-in)
+  // 4. Shifts (Geofenced Monitoring)
   shifts: defineTable({
     nurseId: v.id("users"),
     date: v.string(), 
@@ -60,7 +60,7 @@ export default defineSchema({
   // 6. Clinical Vitals
   vitals: defineTable({
     patientId: v.id("patients"),
-    nurseId: v.string(),
+    nurseId: v.string(), // FIX: Changed to string to allow "SYSTEM" or manual entries
     type: v.union(v.literal("BP"), v.literal("HR"), v.literal("Temp"), v.literal("SpO2")),
     value: v.string(),
     unit: v.string(),
@@ -80,11 +80,11 @@ export default defineSchema({
 
   // 8. System Audit Logs
   auditLogs: defineTable({
-    // FIX: Changed from v.id("users") to v.string() to allow "SYSTEM" logs
-    userId: v.string(),
-    action: v.string(), 
-    targetId: v.string(), 
+    userId: v.string(),       
+    action: v.string(),       
+    targetId: v.string(),     
+    patientName: v.optional(v.string()), 
     timestamp: v.number(),
-    metadata: v.any(), 
+    metadata: v.any(),        
   }).index("by_action", ["action"]),
 });
