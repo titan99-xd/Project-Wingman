@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import sentryxLogo from '../../assets/sentryx_logo.png' // Make sure to rename your asset!
+import sentryxLogo from '../../assets/sentryx_logo.png'
 import '../../styles/header.css';
 
-export default function Header() {
+// The isClinical prop now only controls the Emergency Hub button
+export default function Header({ isClinical }: { isClinical?: boolean }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const location = useLocation()
@@ -18,12 +19,14 @@ export default function Header() {
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
   const closeMobileMenu = () => setIsMobileMenuOpen(false)
-  const isActive = (path: string) => location.pathname === path
+  
+  const isActive = (path: string) => location.pathname.toLowerCase() === path.toLowerCase()
 
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
       <div className="header-container">
-        {/* Logo Section */}
+        
+        {/* 1. LOGO SECTION (Left) */}
         <Link to="/" className="logo-link" onClick={closeMobileMenu}>
           <img 
             src={sentryxLogo} 
@@ -32,7 +35,7 @@ export default function Header() {
           />
         </Link>
 
-        {/* Desktop Navigation - Centered via CSS */}
+        {/* 2. DESKTOP NAVIGATION (Center - Hidden on Mobile via CSS) */}
         <nav className="desktop-nav">
           <Link to="/" className={`nav-link ${isActive('/') ? 'active' : ''}`}>
             <span className="nav-text">Home</span>
@@ -52,28 +55,32 @@ export default function Header() {
           </Link>
         </nav>
 
-        {/* Header CTA - The Shimmer Button */}
-        <div className="header-cta">
-          <button className="cta-button" onClick={() => console.log("Emergency Hub Triggered")}>
-            <span className="cta-text">Emergency Hub</span>
-            <div className="cta-icon">→</div>
-            <div className="cta-shimmer"></div>
+        {/* 3. RIGHT SECTION (Emergency Hub + Mobile Hamburger) */}
+        <div className="header-cta-group">
+          {/* Emergency Hub hides on Clinical pages, but the Hamburger stays! */}
+          {!isClinical && (
+            <div className="header-cta">
+              <button className="cta-button" onClick={() => console.log("Emergency Hub Triggered")}>
+                <span className="cta-text">Emergency Hub</span>
+                <div className="cta-icon">→</div>
+              </button>
+            </div>
+          )}
+
+          {/* MOBILE MENU BUTTON - Now outside any conditional checks */}
+          <button 
+            className={`mobile-menu-btn ${isMobileMenuOpen ? 'active' : ''}`}
+            onClick={toggleMobileMenu}
+            aria-label="Toggle menu"
+          >
+            <span className="menu-line"></span>
+            <span className="menu-line"></span>
+            <span className="menu-line"></span>
           </button>
         </div>
-
-        {/* Mobile Menu Button */}
-        <button 
-          className={`mobile-menu-btn ${isMobileMenuOpen ? 'active' : ''}`}
-          onClick={toggleMobileMenu}
-          aria-label="Toggle menu"
-        >
-          <span className="menu-line"></span>
-          <span className="menu-line"></span>
-          <span className="menu-line"></span>
-        </button>
       </div>
 
-      {/* Mobile Navigation Drawer */}
+      {/* MOBILE NAVIGATION DRAWER - Always available on all pages */}
       <nav className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
         <div className="mobile-nav-content">
           <div className="mobile-nav-header">
@@ -88,38 +95,25 @@ export default function Header() {
           <div className="mobile-nav-links">
             <Link to="/" className={`mobile-nav-link ${isActive('/') ? 'active' : ''}`} onClick={closeMobileMenu}>
               <span className="mobile-link-icon">🏠</span>
-              <span className="mobile-link-text">Home Dashboard</span>
-              <span className="mobile-link-arrow">→</span>
+              <span className="mobile-link-text">Home</span>
             </Link>
             <Link to="/Manager" className={`mobile-nav-link ${isActive('/Manager') ? 'active' : ''}`} onClick={closeMobileMenu}>
               <span className="mobile-link-icon">📋</span>
               <span className="mobile-link-text">Ward Manager</span>
-              <span className="mobile-link-arrow">→</span>
             </Link>
             <Link to="/Tablet" className={`mobile-nav-link ${isActive('/Tablet') ? 'active' : ''}`} onClick={closeMobileMenu}>
               <span className="mobile-link-icon">📱</span>
               <span className="mobile-link-text">Nurse Tablet</span>
-              <span className="mobile-link-arrow">→</span>
             </Link>
             <Link to="/Security" className={`mobile-nav-link ${isActive('/Security') ? 'active' : ''}`} onClick={closeMobileMenu}>
               <span className="mobile-link-icon">🛡️</span>
               <span className="mobile-link-text">Security & Logs</span>
-              <span className="mobile-link-arrow">→</span>
-            </Link>
-          </div>
-
-          <div className="mobile-nav-footer">
-            <Link to="/Manager" className="mobile-cta-button" onClick={closeMobileMenu}>
-              <span>System Status</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* Overlay - Triggers fade in/out via your CSS */}
+      {/* Overlay for Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="mobile-menu-overlay" onClick={closeMobileMenu}></div>
       )}

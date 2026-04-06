@@ -1,269 +1,133 @@
 /* ===================================
-   SENTRYX HEADER CORE
+   1. BASE STYLES (Desktop First)
    =================================== */
-
 .header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
+  height: 85px;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.8);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(65, 105, 225, 0.1);
-  padding: 1.25rem 0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.header.scrolled {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 0.875rem 0;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-  border-bottom: 1px solid rgba(65, 105, 225, 0.15);
 }
 
 .header-container {
+  width: 100%;
   max-width: 1280px;
+  height: 100%;
   margin: 0 auto;
   padding: 0 2rem;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* Logo | Nav | CTA */
   align-items: center;
-  justify-content: space-between; /* Keeps Logo left, CTA right */
-  position: relative;
+}
+
+/* HIDE MOBILE ELEMENTS BY DEFAULT (Desktop) */
+.mobile-menu-btn, 
+.mobile-nav, 
+.mobile-menu-overlay,
+.mobile-nav-header,
+.mobile-nav-links {
+  display: none !important;
 }
 
 /* ===================================
-   LOGO & BRANDING
+   2. DESKTOP ELEMENTS
    =================================== */
-
-.logo-link {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  z-index: 2;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.logo {
-  height: 48px; /* Slightly adjusted for better alignment */
-  width: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(65, 105, 225, 0.15));
-}
-
-.logo-link:hover {
-  transform: translateY(-2px);
-}
-
-/* ===================================
-   DESKTOP NAVIGATION (Centered)
-   =================================== */
+.logo-link { justify-self: start; }
+.logo { height: 40px; }
 
 .desktop-nav {
+  justify-self: center;
   display: flex;
   gap: 2.5rem;
-  align-items: center;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .nav-link {
   text-decoration: none;
-  color: var(--color-dark);
-  font-weight: 500;
-  font-size: 0.9375rem;
-  position: relative;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.nav-link:hover .nav-text {
-  color: var(--color-primary);
-}
-
-/* Indicator logic from your setup */
-.nav-indicator {
-  position: absolute;
-  bottom: -22px; /* Adjusted for the taller header */
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
-  border-radius: 2px 2px 0 0;
-  transform: scaleX(0);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 12px rgba(65, 105, 225, 0.4);
-}
-
-.nav-link.active .nav-indicator {
-  transform: scaleX(1);
-}
-
-.nav-link.active .nav-text {
-  color: var(--color-primary);
-  font-weight: 700;
-}
-
-/* ===================================
-   EMERGENCY HUB CTA (The Shimmer)
-   =================================== */
-
-.header-cta {
-  z-index: 2;
-}
-
-.cta-button {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-  color: white;
-  padding: 0.7rem 1.5rem;
-  border-radius: 10px;
-  border: none;
+  color: #4a5568;
   font-weight: 600;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden; /* Vital for shimmer effect */
+  font-size: 0.95rem;
+}
+
+.nav-link.active { color: #4169E1; }
+
+.header-cta-group {
+  justify-self: end;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 4px 14px rgba(65, 105, 225, 0.25);
-  transition: all 0.3s ease;
-}
-
-.cta-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(65, 105, 225, 0.35);
-}
-
-.cta-shimmer {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.4),
-    transparent
-  );
-  transition: none;
-}
-
-.cta-button:hover .cta-shimmer {
-  animation: shimmerEffect 1s forwards;
-}
-
-@keyframes shimmerEffect {
-  100% { left: 100%; }
+  gap: 1.5rem;
 }
 
 /* ===================================
-   MOBILE STYLES
+   3. MOBILE VIEW (768px and below)
    =================================== */
-
-.mobile-menu-btn {
-  display: none;
-  z-index: 1002;
-}
-
-@media (max-width: 1024px) {
-  /* Prevent overlap on tablets */
-  .desktop-nav {
-    gap: 1.5rem;
-  }
-}
-
 @media (max-width: 768px) {
-  .desktop-nav, .header-cta {
-    display: none;
+  /* HIDE DESKTOP NAV */
+  .desktop-nav { display: none !important; }
+
+  .header { height: 70px; }
+  
+  .header-container {
+    display: flex !important;
+    justify-content: space-between !important;
   }
 
+  /* SHOW MOBILE BUTTON ON THE RIGHT */
   .mobile-menu-btn {
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     gap: 5px;
     background: none;
     border: none;
+    cursor: pointer;
+    z-index: 2001;
   }
 
   .menu-line {
     width: 24px;
     height: 2px;
-    background-color: var(--color-primary);
-    transition: 0.3s;
+    background-color: #4169E1;
   }
 
-  /* Full-screen drawer styling */
+  /* SHOW DRAWER (HIDDEN OFF-SCREEN) */
   .mobile-nav {
+    display: block !important;
     position: fixed;
     top: 0;
-    right: -100%;
-    width: 80%;
+    right: -100%; /* Off-screen */
+    width: 280px;
     height: 100vh;
     background: white;
-    z-index: 1001;
-    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    padding: 2rem;
+    z-index: 2000;
+    transition: right 0.4s ease;
     box-shadow: -10px 0 30px rgba(0,0,0,0.1);
   }
 
   .mobile-nav.open {
-    right: 0;
+    right: 0 !important; /* Slide in */
   }
+
+  /* SHOW LINKS INSIDE DRAWER */
+  .mobile-nav-content,
+  .mobile-nav-links {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .mobile-nav-content { padding: 80px 1.5rem; }
 
   .mobile-nav-link {
-    display: flex;
+    display: flex !important;
     align-items: center;
-    gap: 1rem;
-    padding: 1.25rem;
-    text-decoration: none;
-    color: var(--color-dark);
-    font-weight: 600;
+    padding: 1.2rem;
+    margin-bottom: 0.8rem;
+    background: #f8fafc;
     border-radius: 12px;
-    margin-bottom: 0.5rem;
+    text-decoration: none;
+    color: #1a202c !important;
+    font-weight: 600;
   }
-
-  .mobile-nav-link.active {
-    background: rgba(65, 105, 225, 0.1);
-    color: var(--color-primary);
-  }
-
-  .mobile-menu-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(4px);
-    z-index: 1000;
-  }
-}
-
-/* EMERGENCY FIX: Hide mobile elements on Desktop */
-@media (min-width: 769px) {
-  .mobile-nav, 
-  .mobile-menu-overlay, 
-  .mobile-menu-btn,
-  .mobile-close-btn {
-    display: none !important;
-  }
-}
-
-/* Ensure the mobile nav is actually hidden when not open */
-.mobile-nav {
-  display: none; /* Hidden by default */
-  position: fixed;
-  top: 0;
-  right: -100%;
-  width: 80%;
-  height: 100vh;
-  z-index: 2000;
-  transition: right 0.4s ease;
-}
-
-.mobile-nav.open {
-  display: block; /* Show only when 'open' class is added */
-  right: 0;
 }
