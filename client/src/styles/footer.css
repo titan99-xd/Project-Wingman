@@ -1,41 +1,63 @@
 /* ===================================
-   SENTRYX FOOTER STYLES
+   SENTRYX MASTER FOOTER
    =================================== */
 
 .footer {
-  background-color: var(--color-white);
-  border-top: 1px solid rgba(65, 105, 225, 0.1);
-  padding: 4rem 0 2rem 0;
-  margin-top: 5rem; /* Space from the main content */
-  color: var(--color-dark);
+  width: 100%;
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  padding: 5rem 0 2rem 0;
+  margin-top: 5rem;
+  color: #1a202c;
+  /* Ensures it stays below the background graphics */
+  position: relative;
+  z-index: 10;
 }
 
 .footer-container {
+  /* This must match your Header/Main content width */
   max-width: 1280px;
-  margin: 0 auto;
+  margin: 0 auto; /* This centers the tray on the table */
   padding: 0 2rem;
 }
 
 .footer-main {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1.5fr; /* Custom balance */
-  gap: 4rem;
-  margin-bottom: 3rem;
+  display: grid !important;
+  /* repeat(3, 1fr) forces 3 equal columns to span the WHOLE 1280px */
+  grid-template-columns: repeat(3, 1fr) !important; 
+  gap: 2rem !important;
+  width: 100% !important;
+  padding: 4rem 0 !important;
+}
+
+/* Fix the Social column specifically */
+.footer-column.footer-about {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Lines up with Logo above */
+}
+
+/* Fix the Copyright Bar alignment */
+.footer-bottom-content {
+  display: flex !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  padding-top: 2rem;
+  border-top: 1px solid #f1f5f9;
 }
 
 /* ===================================
-   COLUMN 1: LOGO & SOCIAL
+   COLUMN 1: SOCIAL MEDIA
    =================================== */
 
 .footer-logo-text {
-  font-size: 1.5rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #4169E1; /* Primary Blue */
   margin-bottom: 1.5rem;
   display: block;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .footer-social {
@@ -47,32 +69,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: var(--color-light);
-  border-radius: 50%;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 44px;
+  height: 44px;
+  background: #f8fafc;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
+/* THE CAT/LOGO FIX: Prevents icons from expanding */
 .social-link img {
-  width: 20px;
-  height: 20px;
+  width: 22px !important;
+  height: 22px !important;
   object-fit: contain;
-  /* Grayscale filter makes icons look uniform until hover */
-  filter: grayscale(100%);
-  opacity: 0.7;
-  transition: all 0.3s ease;
 }
 
 .social-link:hover {
-  background: white;
   transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(65, 105, 225, 0.2);
-}
-
-.social-link:hover img {
-  filter: grayscale(0%);
-  opacity: 1;
+  background: white;
+  box-shadow: 0 4px 12px rgba(65, 105, 225, 0.1);
+  border-color: #e2e8f0;
 }
 
 /* ===================================
@@ -83,7 +99,9 @@
   font-size: 1.125rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: var(--color-primary);
+  color: #4169E1;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .footer-links, .footer-contact {
@@ -94,72 +112,77 @@
 
 .footer-link, .contact-link {
   text-decoration: none;
-  color: #666;
-  font-size: 0.9375rem;
-  transition: all 0.3s ease;
+  color: #64748b;
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
   display: inline-block;
-  margin-bottom: 0.75rem;
+  transition: color 0.2s;
 }
 
 .footer-link:hover, .contact-link:hover {
-  color: var(--color-primary);
-  transform: translateX(5px);
+  color: #4169E1;
 }
 
 .contact-item {
   display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
+  align-items: center;
+  gap: 0.8rem;
   margin-bottom: 1rem;
 }
 
 .contact-icon {
-  color: var(--color-secondary);
+  color: #00BFA6; /* Secondary Teal */
   display: flex;
   align-items: center;
-  margin-top: 2px;
 }
 
 /* ===================================
-   FOOTER BOTTOM
+   FOOTER BOTTOM (The Legal Bar)
    =================================== */
 
 .footer-bottom {
+  border-top: 1px solid #f1f5f9;
   padding-top: 2rem;
-  border-top: 1px solid #eee;
 }
 
 .footer-bottom-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Copyright Left, Privacy Right */
   align-items: center;
-  font-size: 0.875rem;
-  color: #999;
+  color: #94a3b8;
+  font-size: 0.9rem;
 }
 
 .legal-link {
   text-decoration: none;
-  color: #999;
-  transition: color 0.3s ease;
+  color: #94a3b8;
+  transition: color 0.2s;
 }
 
 .legal-link:hover {
-  color: var(--color-primary);
+  color: #4169E1;
 }
 
 /* ===================================
    RESPONSIVE
    =================================== */
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+  .footer-main {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
   .footer-main {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
+    text-align: center;
   }
-
+  .footer-social, .contact-item {
+    justify-content: center;
+  }
   .footer-bottom-content {
     flex-direction: column;
     gap: 1rem;
-    text-align: center;
   }
 }

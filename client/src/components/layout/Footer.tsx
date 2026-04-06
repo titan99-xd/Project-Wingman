@@ -9,92 +9,54 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="footer">
-      <div className="footer-container">
+    <footer className="footer" style={{ width: '100%', background: 'white', borderTop: '1px solid #eee' }}>
+      {/* This DIV is the one we are forcing to be 1280px and centered */}
+      <div className="footer-container" style={{ maxWidth: '1280px', margin: '0 auto', width: '100%', padding: '0 2rem' }}>
+        
         {/* Footer Main Content */}
-        <div className="footer-main">
+        <div className="footer-main" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '2rem', padding: '4rem 0' }}>
+          
           {/* Company Info */}
           <div className="footer-column footer-about">
-            <div className="footer-logo">
-              <span className="footer-logo-text">Social Media</span>
-            </div>
-            <div className="footer-social">
-              <a href="https://www.facebook.com/avvee18/" target="_blank" rel="noopener noreferrer" className="social-link" aria-label="Facebook">
-                <img src={facebook} alt='facebook' />
-              </a>
-              
-              <a href="https://www.linkedin.com/in/avvee18/" target="_blank" rel="noopener noreferrer" className="social-link" aria-label="LinkedIn">
-                <img src={linkedIn} alt='LinkedIn' />
-              </a>
-              <a href="https://www.instagram.com/avveenav/" target="_blank" rel="noopener noreferrer" className="social-link" aria-label="Instagram">
-                <img src={instagram} alt='Instagram' />
-              </a>
-              <a href="https://github.com/titan99-xd" target="_blank" rel="noopener noreferrer" className="social-link" aria-label="GitHub">
-                <img src={github} alt='Github' />
-              </a>
+            <span className="footer-logo-text" style={{ color: '#4169E1', fontWeight: 700, textTransform: 'uppercase', marginBottom: '1.5rem', display: 'block' }}>Social Media</span>
+            <div className="footer-social" style={{ display: 'flex', gap: '1rem' }}>
+              <a href="https://www.facebook.com/avvee18/" target="_blank" className="social-link"><img src={facebook} style={{ width: '24px' }} alt='fb' /></a>
+              <a href="https://www.linkedin.com/in/avvee18/" target="_blank" className="social-link"><img src={linkedIn} style={{ width: '24px' }} alt='li' /></a>
+              <a href="https://www.instagram.com/avveenav/" target="_blank" className="social-link"><img src={instagram} style={{ width: '24px' }} alt='ig' /></a>
+              <a href="https://github.com/titan99-xd" target="_blank" className="social-link"><img src={github} style={{ width: '24px' }} alt='gh' /></a>
             </div>
           </div>
 
           {/* Quick Links */}
           <div className="footer-column">
-            <h3 className="footer-heading">Quick Links</h3>
-            <ul className="footer-links">
+            <h3 className="footer-heading" style={{ color: '#4169E1', marginBottom: '1.5rem' }}>Quick Links</h3>
+            <ul className="footer-links" style={{ listStyle: 'none', padding: 0 }}>
               <li><Link to="/" className="footer-link">Home</Link></li>
               <li><Link to="/Manager" className="footer-link">Manager</Link></li>
               <li><Link to="/Tablet" className="footer-link">Tablet</Link></li>
               <li><Link to="/Security" className="footer-link">Security</Link></li>
-              
             </ul>
           </div>
+
           {/* Contact Info */}
           <div className="footer-column">
-            <h3 className="footer-heading">Contact Us</h3>
-            <ul className="footer-contact">
-              <li className="contact-item">
-                <span className="contact-icon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                  </svg>
-                </span>
-                <a href="mailto:info@trinovatech.fi" className="contact-link">
-                  abhinavgautam3166@gmail.com
-                </a>
+            <h3 className="footer-heading" style={{ color: '#4169E1', marginBottom: '1.5rem' }}>Contact Us</h3>
+            <ul className="footer-contact" style={{ listStyle: 'none', padding: 0 }}>
+              <li style={{ marginBottom: '1rem' }}>
+                <a href="mailto:info@trinovatech.fi" className="contact-link">abhinavgautam3166@gmail.com</a>
               </li>
-              <li className="contact-item">
-                <span className="contact-icon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
-                  </svg>
-                </span>
-                <a href="tel:+358407017910" className="contact-link">
-                  +358 417425877
-                </a>
+              <li style={{ marginBottom: '1rem' }}>
+                <a href="tel:+358407017910" className="contact-link">+358 417425877</a>
               </li>
-              <li className="contact-item">
-                <span className="contact-icon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-                    <circle cx="12" cy="10" r="3"/>
-                  </svg>
-                </span>
-                <div className="contact-link">
-                   Helsinki Finland
-                </div>
-              </li>
+              <li>Helsinki,Finland</li>
             </ul>
           </div>
         </div>
 
-        {/* Footer Bottom */}
-        <div className="footer-bottom">
-          <div className="footer-bottom-content">
-            <p className="footer-copyright">
-              © {currentYear} All rights reserved.
-            </p>
-            <div className="footer-legal">
-              <Link to="/privacy-policy" className="legal-link">Privacy Policy</Link>
-            </div>
-          </div>
+        {/* Footer Bottom Bar */}
+        <div className="footer-bottom" style={{ borderTop: '1px solid #eee', padding: '2rem 0', display: 'flex', justifyContent: 'space-between' }}>
+            <p>© {currentYear} All rights reserved.</p>
+            <Link to="/privacy-policy" style={{ color: '#999', textDecoration: 'none' }}>Privacy Policy</Link>
         </div>
       </div>
     </footer>
