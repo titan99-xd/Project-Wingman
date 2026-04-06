@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import "../../styles/manager.css";
+import type { Id } from "../../convex/_generated/dataModel";
+import "./../styles/manager.css";
 
 export default function Manager() {
   // 1. Backend Hooks
@@ -30,10 +31,10 @@ export default function Manager() {
       await admitPatient({
         name: formData.name,
         age: Number(formData.age),
-        sex: formData.sex,
+        sex: formData.sex as "Male" | "Female" | "Other",
         roomNumber: formData.roomNumber,
         medicalHistory: formData.medicalHistory,
-        status: formData.status, // Passing the triage status
+        status: formData.status as "Stable" | "Unstable" | "Critical", 
       });
 
       // Reset form
@@ -46,11 +47,11 @@ export default function Manager() {
     }
   };
 
-  const handleDischarge = async (id: any) => {
-    if (window.confirm("Confirm patient discharge? This will archive their record.")) {
-      await dischargePatient({ patientId: id });
-    }
-  };
+  const handleDischarge = async (id: Id<"patients">) => {
+  if (window.confirm("Confirm patient discharge? This will archive their record.")) {
+    await dischargePatient({ patientId: id }); 
+  }
+};
 
   return (
     <div className="manager-page">
@@ -93,7 +94,7 @@ export default function Manager() {
                 <label>Sex</label>
                 <select 
                   value={formData.sex}
-                  onChange={(e) => setFormData({...formData, sex: e.target.value as any})}
+                  onChange={(e) => setFormData({...formData, sex: e.target.value as "Male" | "Female" | "Other"})}
                 >
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
