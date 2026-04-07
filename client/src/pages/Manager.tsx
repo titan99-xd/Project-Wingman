@@ -17,7 +17,7 @@ export default function Manager() {
     sex: "Male" as "Male" | "Female" | "Other",
     roomNumber: "",
     medicalHistory: "",
-    status: "Stable", // New Triage Status
+    status: "Stable", 
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);

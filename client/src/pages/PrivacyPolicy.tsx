@@ -23,26 +23,26 @@ export default function PrivacyPolicy() {
         <div className='privacy-container'>
           <div className='privacy-intro'>
             <p>
-              This Privacy Policy explains how I ("I", "me", "my website") collect, use, and protect your information when you visit my personal website{' '}
+              This Privacy Policy explains how we ("we", "us", "our website") collect, use, and protect your information when you visit our personal website{' '}
               <a href="https://trinovatech.fi" target="_blank" rel="noopener noreferrer">https://abhinavgautam.com.np</a>{' '} 
-              or contact me through it.
+              or contact us through it.
             </p>
           </div>
 
           <div className='privacy-section'>
-            <h2>1. Who I Am</h2>
+            <h2>1. Who Are We</h2>
             <ul className='info-list'>
-              <li><strong>Name:</strong> Abhinav Gautam</li>
+              <li><strong>Name:</strong> SentryX</li>
               <li><strong>Website:</strong> https://abhinavgautam.com.np</li>
               <li><strong>Email:</strong> <a href="mailto:abhinavgautam3166@gmail.com">abhinavgautam3166@gmail.com</a></li>
               <li><strong>Location:</strong> Helsinki, Finland</li>
             </ul>
-            <p>This is my personal portfolio website where I share my work, skills, and projects.</p>
+            <p>This website is designed to help nurses to manage their schedule and work in a paperless environment for patient record, vitals, medical history and medication management.</p>
           </div>
 
           <div className='privacy-section'>
-            <h2>2. Information I Collect</h2>
-            <p>I only collect information necessary for communication or website performance:</p>
+            <h2>2. Information We Collect</h2>
+            <p>We only collect information necessary for communication or website performance:</p>
             <ul>
               <li>Contact form details such as your name, email, and message.</li>
               <li>Technical data such as IP address, device type, browser, and pages visited.</li>
@@ -52,7 +52,7 @@ export default function PrivacyPolicy() {
           </div>
 
           <div className='privacy-section'>
-            <h2>3. How I Use Your Information</h2>
+            <h2>3. How We Use Your Information</h2>
             <p>Your information is used only for:</p>
             <ul>
               <li>Responding to your messages or inquiries.</li>
@@ -60,7 +60,7 @@ export default function PrivacyPolicy() {
               <li>Understanding visitor behaviour through analytics.</li>
               <li>Ensuring website security.</li>
             </ul>
-            <p>I do not sell or use your data for advertising.</p>
+            <p>We do not sell or use your data for advertising.</p>
           </div>
 
           <div className='privacy-section'>
@@ -81,7 +81,7 @@ export default function PrivacyPolicy() {
 
           <div className='privacy-section'>
             <h2>6. Data Sharing</h2>
-            <p>I do not sell or rent your information. Data may only be shared with:</p>
+            <p>We do not sell or rent your information. Data may only be shared with:</p>
             <ul>
               <li>Hosting providers and analytics tools.</li>
               <li>Authorities when legally required.</li>
@@ -99,7 +99,7 @@ export default function PrivacyPolicy() {
           <div className='privacy-section'>
             <h2>8. Data Security</h2>
             <p>
-              I take reasonable measures to protect your personal data, but no online service can guarantee complete security.
+              We take reasonable measures to protect your personal data, but no online service can guarantee complete security.
             </p>
           </div>
 
@@ -114,7 +114,7 @@ export default function PrivacyPolicy() {
               <li>Request restriction or portability of your data.</li>
             </ul>
             <p>
-              To exercise your rights, contact me at{' '}
+              To exercise your rights, contact us at{' '}
               <a href="mailto:abhinavgautam3166@gmail.com">abhinavgautam3166@gmail.com</a>.
             </p>
           </div>
@@ -135,7 +135,7 @@ export default function PrivacyPolicy() {
 
           <div className='privacy-section'>
             <h2>12. Contact</h2>
-            <p>If you have questions about this Privacy Policy, contact me at:</p>
+            <p>If you have questions about this Privacy Policy, contact us at:</p>
             <div className='contact-box'>
               <p><strong>Abhinav Gautam</strong></p>
               <p>Email: <a href="mailto:abhinavgautam3166@gmail.com">abhinavgautam3166@gmail.com</a></p>
