@@ -1,0 +1,214 @@
+/* --- RESET & BASE --- */
+.landing-page {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #1a202c;
+  line-height: 1.6;
+  background: white;
+}
+
+/* --- HERO SECTION --- */
+.hero-section {
+  padding: 8rem 2rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+  overflow: hidden;
+}
+
+.hero-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+.hero-text { flex: 1.2; }
+
+.project-badge {
+  color: #2b6cb0;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 0.75rem;
+  background: #ebf8ff;
+  padding: 6px 16px;
+  border-radius: 50px;
+}
+
+.hero-text h1 {
+  font-size: 3.8rem;
+  color: #1a365d;
+  line-height: 1.1;
+  margin: 1.5rem 0;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.hero-text p {
+  font-size: 1.3rem;
+  color: #4a5568;
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+}
+
+.hero-actions { display: flex; gap: 1rem; }
+
+.btn-main {
+  background: #2b6cb0;
+  color: white;
+  padding: 1.1rem 2.8rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  box-shadow: 0 10px 20px rgba(43, 108, 176, 0.2);
+  transition: transform 0.2s;
+}
+
+.btn-sub {
+  border: 2px solid #e2e8f0;
+  color: #4a5568;
+  padding: 1.1rem 2.8rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  background: white;
+}
+
+/* Abstract UI Card Visual */
+.hero-visual { flex: 0.8; position: relative; }
+.abstract-ui-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 24px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.08);
+  border: 1px solid #edf2f7;
+  width: 100%;
+}
+.ui-header { display: flex; gap: 8px; margin-bottom: 1.5rem; }
+.ui-dot { width: 10px; height: 10px; border-radius: 50%; }
+.red { background: #feb2b2; } .yellow { background: #faf089; } .green { background: #9ae6b4; }
+.ui-line { height: 12px; background: #f1f5f9; border-radius: 6px; margin-bottom: 12px; }
+.ui-line.short { width: 60%; }
+.ui-stat-box {
+  margin-top: 2rem;
+  background: #f0fff4;
+  color: #2f855a;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pulse-icon { width: 8px; height: 8px; background: #48bb78; border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+/* --- CAPABILITIES GRID --- */
+.capabilities { padding: 5rem 2rem; background: white; }
+.cap-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+}
+.cap-card { background: #f7fafc; padding: 2.5rem 1.5rem; border-radius: 24px; text-align: center; border: 1px solid transparent; transition: all 0.3s; }
+.cap-card:hover { transform: translateY(-8px); border-color: #bee3f8; background: white; box-shadow: 0 15px 30px rgba(0,0,0,0.04); }
+.cap-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.cap-card p { font-size: 0.9rem; font-weight: 700; color: #2d3748; }
+
+/* --- NEW WORKFLOW SECTION --- */
+.workflow-section { padding: 6rem 2rem; background: #1a202c; color: white; }
+.workflow-container { max-width: 1100px; margin: 0 auto; text-align: center; }
+.workflow-container h2 { font-size: 2.5rem; margin-bottom: 4rem; }
+.workflow-steps { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.step { flex: 1; padding: 1rem; }
+.step-num { font-size: 3rem; font-weight: 900; color: #2b6cb0; margin-bottom: 1rem; opacity: 0.5; }
+.step h4 { font-size: 1.2rem; margin-bottom: 1rem; color: #63b3ed; }
+.step p { font-size: 0.95rem; opacity: 0.8; }
+.step-arrow { font-size: 2rem; color: #2d3748; font-weight: 100; }
+
+/* --- MODULE DETAILS --- */
+.module-details { padding: 6rem 2rem; max-width: 1100px; margin: 0 auto; }
+.module-header { text-align: center; margin-bottom: 4rem; }
+.module-header h2 { font-size: 2.8rem; color: #1a365d; margin-bottom: 1rem; font-weight: 800; }
+.detailed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; }
+.detail-item { text-align: center; padding: 1rem; }
+.detail-icon { font-size: 2.5rem; margin-bottom: 1.5rem; }
+.detail-item h3 { margin-bottom: 1rem; color: #2d3748; font-size: 1.4rem; }
+.detail-item p { color: #718096; }
+
+/* --- COMPARISON SECTION --- */
+.comparison-section { padding: 6rem 2rem; background: #f8fafc; margin-bottom: 4rem; }
+.section-container { max-width: 1000px; margin: 0 auto; text-align: center; }
+.comparison-grid { display: flex; gap: 2rem; margin-top: 3.5rem; }
+.comp-box { flex: 1; padding: 3rem; border-radius: 30px; text-align: left; }
+.comp-box.manual { background: white; border: 1px dashed #cbd5e0; }
+.comp-box.sentryx { background: #2c5282; color: white; box-shadow: 0 20px 40px rgba(44, 82, 130, 0.2); }
+.comp-box h4 { margin-bottom: 2rem; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
+.comp-box ul { list-style: none; padding: 0; }
+.comp-box li { margin-bottom: 1.2rem; font-weight: 600; font-size: 1rem; }
+
+.workflow-section { 
+  padding: 8rem 2rem; 
+  background: white; 
+}
+
+.workflow-container { 
+  max-width: 1200px; 
+  margin: 0 auto; 
+  text-align: center;
+  background: #0f172a; 
+  padding: 5rem 3rem;
+  border-radius: 40px; 
+  color: white;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
+}
+
+.workflow-container h2 { 
+  font-size: 2.8rem; 
+  margin-bottom: 5rem; 
+  letter-spacing: -1px;
+}
+
+.workflow-steps { 
+  display: flex; 
+  align-items: flex-start; 
+  justify-content: space-between; 
+  gap: 2rem; 
+}
+
+.step { 
+  flex: 1; 
+  padding: 0 1rem;
+}
+
+.step-num { 
+  font-size: 4rem; 
+  font-weight: 900; 
+  color: #3b82f6; 
+  margin-bottom: 1.5rem; 
+  opacity: 0.3; 
+  display: block;
+}
+
+.step h4 { 
+  font-size: 1.4rem; 
+  margin-bottom: 1rem; 
+  color: #60a5fa; 
+  font-weight: 700;
+}
+
+.step p { 
+  font-size: 1rem; 
+  line-height: 1.7;
+  opacity: 0.8; 
+  color: #cbd5e1;
+}
+
+.step-arrow { 
+  font-size: 1.5rem; 
+  color: #334155; 
+  padding-top: 5rem;
+  font-weight: 300;
+}
