@@ -80,7 +80,6 @@ export default function Header({ isClinical }: { isClinical?: boolean }) {
         </div>
       </div>
 
-      {/* MOBILE NAVIGATION DRAWER - Always available on all pages */}
       <nav className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
         <div className="mobile-nav-content">
           <div className="mobile-nav-header">

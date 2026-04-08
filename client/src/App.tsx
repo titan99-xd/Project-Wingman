@@ -22,7 +22,6 @@ function LayoutWrapper() {
   /**
    * THE GATEKEEPER LOGIC
    * This handles /Manager, /manager, and /ManAgEr automatically.
-   * It also tells the app when to hide "public" marketing elements.
    */
   const isClinicalRoute = [
     "/manager", 
@@ -33,10 +32,6 @@ function LayoutWrapper() {
   return (
     <div className="app-container">
       <ScrollToTop />
-
-      {/* CRITICAL FIX: Passing 'isClinical' to the Header. 
-         Open your Header.tsx and make sure it accepts this prop! 
-      */}
       <Header isClinical={isClinicalRoute} />
 
       {/* Show floating contact button only on public pages (Home/Contact) */}
@@ -56,7 +51,7 @@ function LayoutWrapper() {
         </Routes>
       </main>
 
-      {/* CLEAN UI FIX: Hide the big footer on clinical pages 
+      {/* Hides the big footer on clinical pages 
          so nurses can see more patient data. 
       */}
       {!isClinicalRoute && <Footer />}

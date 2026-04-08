@@ -88,6 +88,6 @@ export const getAuditLogs = query({
     return await ctx.db
       .query("auditLogs")
       .order("desc") 
-      .take(50); // Limits to last 50 for better performance during demo
+      .take(50); // Limits to last 50 for better performance during demos, can be adjusted as needed
   },
 });
