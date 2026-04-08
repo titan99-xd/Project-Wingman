@@ -10,7 +10,6 @@ export default function Footer() {
 
   return (
     <footer className="footer" style={{ width: '100%', background: 'white', borderTop: '1px solid #eee' }}>
-      {/* This DIV is the one we are forcing to be 1280px and centered */}
       <div className="footer-container" style={{ maxWidth: '1280px', margin: '0 auto', width: '100%', padding: '0 2rem' }}>
         
         {/* Footer Main Content */}

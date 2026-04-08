@@ -9,7 +9,7 @@ export default function Tablet() {
   const patients = useQuery(api.patients.getActivePatients);
   const addVitalMutation = useMutation(api.vitals.addVitals);
   
-  // New Hook: Fetches the last 10 readings for the selected patient
+  // Fetches the last 10 readings for the selected patient
   const [selectedPatientId, setSelectedPatientId] = useState<Id<"patients"> | null>(null);
   const vitalsHistory = useQuery(api.vitals.getPatientVitals, 
     selectedPatientId ? { patientId: selectedPatientId } : "skip"
@@ -64,7 +64,6 @@ export default function Tablet() {
 
       await Promise.all(mutations);
       setVitalInput({ hr: "", bp: "", spo2: "" });
-      // No alert here makes the UX smoother for real-time history updates
     } catch (err) {
       console.error("Submission Error:", err);
       alert("Error: Data mismatch. Check schema.");
@@ -153,7 +152,7 @@ export default function Tablet() {
               {isSubmitting ? "Synchronizing..." : "Submit Observations"}
             </button>
 
-            {/* --- NEW: VITALS HISTORY TABLE --- */}
+            {/* --- VITALS HISTORY TABLE --- */}
             <section className="vitals-history-section">
               <div className="section-header">
                 <h3>Recent Observations</h3>
