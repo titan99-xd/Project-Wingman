@@ -60,7 +60,7 @@ export default function Header({ isClinical }: { isClinical?: boolean }) {
           {/* Emergency Hub hides on Clinical pages, but the Hamburger stays! */}
           {!isClinical && (
             <div className="header-cta">
-              <button className="cta-button" onClick={() => console.log("Emergency Hub Triggered")}>
+              <button className="cta-button" onClick={() => window.location.href="/EmergencyHub"}>
                 <span className="cta-text">Emergency Hub</span>
                 <div className="cta-icon">→</div>
               </button>

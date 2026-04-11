@@ -274,3 +274,26 @@
 .time-cell { color: #64748b; font-weight: 500; }
 .unit { font-size: 0.75rem; color: #94a3b8; }
 .nurse-id code { background: #f1f5f9; padding: 2px 5px; border-radius: 4px; }
+
+
+.emergency-response-banner {
+  background: #f0fdf4; /* Soft green */
+  border: 2px solid #22c55e;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.response-icon { font-size: 2rem; }
+.response-text strong { color: #166534; display: block; font-size: 0.9rem; text-transform: uppercase; }
+.response-text p { color: #14532d; font-size: 1.1rem; font-weight: 600; margin: 0; }
+.response-time { margin-left: auto; font-size: 0.8rem; color: #166534; opacity: 0.7; }

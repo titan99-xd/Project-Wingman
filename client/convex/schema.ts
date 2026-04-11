@@ -70,7 +70,7 @@ export default defineSchema({
   // 7. Emergency SOS Triggers
   emergencies: defineTable({
     patientId: v.id("patients"),
-    nurseId: v.id("users"), 
+    nurseId: v.string(),
     status: v.union(v.literal("active"), v.literal("resolved")),
     triggeredAt: v.number(),
     resolvedAt: v.optional(v.number()),
