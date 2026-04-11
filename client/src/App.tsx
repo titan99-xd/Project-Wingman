@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import Manager from "./pages/Manager";  
 import Tablet from "./pages/Tablet";     
 import Security from "./pages/Security"; 
+import EmergencyHub from "./pages/EmergencyHub"; // 🚨 New Import
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 
@@ -21,12 +22,13 @@ function LayoutWrapper() {
 
   /**
    * THE GATEKEEPER LOGIC
-   * This handles /Manager, /manager, and /ManAgEr automatically.
+   * We added "/emergencyhub" to this list so it behaves like a clinical tool.
    */
   const isClinicalRoute = [
     "/manager", 
     "/tablet", 
-    "/security"
+    "/security",
+    "/emergencyhub" // 🚨 Added to clinical gatekeeper
   ].some(route => location.pathname.toLowerCase().startsWith(route));
 
   return (
@@ -44,6 +46,7 @@ function LayoutWrapper() {
           <Route path="/Manager" element={<Manager />} />
           <Route path="/Tablet" element={<Tablet />} />
           <Route path="/Security" element={<Security />} />
+          <Route path="/EmergencyHub" element={<EmergencyHub />} /> 
           
           {/* Public/Legal Routes */}
           <Route path="/contact" element={<Contact />} />
@@ -51,9 +54,7 @@ function LayoutWrapper() {
         </Routes>
       </main>
 
-      {/* Hides the big footer on clinical pages 
-         so nurses can see more patient data. 
-      */}
+      {/* Hides the big footer on clinical pages */}
       {!isClinicalRoute && <Footer />}
     </div>
   );

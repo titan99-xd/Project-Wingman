@@ -8,14 +8,17 @@ export default function Tablet() {
   // --- 1. CONVEX HOOKS ---
   const patients = useQuery(api.patients.getActivePatients);
   const addVitalMutation = useMutation(api.vitals.addVitals);
+  const triggerSOSMutation = useMutation(api.emergencies.triggerSOS); 
   
-  // Fetches the last 10 readings for the selected patient
   const [selectedPatientId, setSelectedPatientId] = useState<Id<"patients"> | null>(null);
   const vitalsHistory = useQuery(api.vitals.getPatientVitals, 
     selectedPatientId ? { patientId: selectedPatientId } : "skip"
   );
 
   // --- 2. COMPONENT STATE ---
+  const latestEmergency = useQuery(api.emergencies.getLatestEmergencyForPatient, 
+  selectedPatientId ? { patientId: selectedPatientId } : "skip"
+);
   const [vitalInput, setVitalInput] = useState({ hr: "", bp: "", spo2: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -28,7 +31,28 @@ export default function Tablet() {
 
   const selectedPatient = patients?.find(p => p._id === selectedPatientId);
 
-  // --- 4. LOGIC: SAVE VITALS TO CONVEX ---
+  // --- 4. LOGIC: TRIGGER EMERGENCY SOS ---
+  const handleSOS = async () => {
+    if (!selectedPatientId || !selectedPatient) return;
+
+    // Clinical safety check (prevent accidental taps)
+    const confirmed = window.confirm(`URGENT: Trigger SOS for ${selectedPatient.name} in Room ${selectedPatient.roomNumber}?`);
+
+    if (confirmed) {
+      try {
+        await triggerSOSMutation({
+          patientId: selectedPatientId,
+          nurseId: "TABLET_PRO_01", // Placeholder for current device ID
+        });
+        alert("🚨 SOS SIGNAL SENT. Emergency Hub has been notified.");
+      } catch (err) {
+        console.error("SOS Error:", err);
+        alert("Failed to send SOS. Check system connection!");
+      }
+    }
+  };
+
+  // --- 5. LOGIC: SAVE VITALS ---
   const handleSaveVitals = async () => {
     if (!selectedPatientId) return;
     if (!vitalInput.hr && !vitalInput.bp && !vitalInput.spo2) {
@@ -42,31 +66,15 @@ export default function Tablet() {
 
     try {
       const mutations = [];
-
-      if (vitalInput.hr) {
-        mutations.push(addVitalMutation({ 
-          patientId: selectedPatientId, nurseId, type: "HR", 
-          value: vitalInput.hr, unit: "bpm", timestamp 
-        }));
-      }
-      if (vitalInput.bp) {
-        mutations.push(addVitalMutation({ 
-          patientId: selectedPatientId, nurseId, type: "BP", 
-          value: vitalInput.bp, unit: "mmHg", timestamp 
-        }));
-      }
-      if (vitalInput.spo2) {
-        mutations.push(addVitalMutation({ 
-          patientId: selectedPatientId, nurseId, type: "SpO2", 
-          value: vitalInput.spo2, unit: "%", timestamp 
-        }));
-      }
+      if (vitalInput.hr) mutations.push(addVitalMutation({ patientId: selectedPatientId, nurseId, type: "HR", value: vitalInput.hr, unit: "bpm", timestamp }));
+      if (vitalInput.bp) mutations.push(addVitalMutation({ patientId: selectedPatientId, nurseId, type: "BP", value: vitalInput.bp, unit: "mmHg", timestamp }));
+      if (vitalInput.spo2) mutations.push(addVitalMutation({ patientId: selectedPatientId, nurseId, type: "SpO2", value: vitalInput.spo2, unit: "%", timestamp }));
 
       await Promise.all(mutations);
       setVitalInput({ hr: "", bp: "", spo2: "" });
     } catch (err) {
       console.error("Submission Error:", err);
-      alert("Error: Data mismatch. Check schema.");
+      alert("Error: Data mismatch.");
     } finally {
       setIsSubmitting(false);
     }
@@ -109,7 +117,8 @@ export default function Tablet() {
                   <strong>Clinical History:</strong> {selectedPatient.medicalHistory}
                 </p>
               </div>
-              <button className="sos-btn" onClick={() => alert("SOS Triggered. Security notified.")}>
+              {/* 🚨 Updated Button with handleSOS */}
+              <button className="sos-btn" onClick={handleSOS}>
                 TRIGGER SOS
               </button>
             </header>
@@ -117,30 +126,15 @@ export default function Tablet() {
             <div className="vitals-grid">
               <div className="vital-input-card">
                 <label>Heart Rate (BPM)</label>
-                <input 
-                  type="number" 
-                  value={vitalInput.hr} 
-                  onChange={(e) => setVitalInput({...vitalInput, hr: e.target.value})} 
-                  placeholder="--"
-                />
+                <input type="number" value={vitalInput.hr} onChange={(e) => setVitalInput({...vitalInput, hr: e.target.value})} placeholder="--" />
               </div>
               <div className="vital-input-card">
                 <label>Blood Pressure</label>
-                <input 
-                  type="text" 
-                  value={vitalInput.bp} 
-                  onChange={(e) => setVitalInput({...vitalInput, bp: e.target.value})} 
-                  placeholder="0/0"
-                />
+                <input type="text" value={vitalInput.bp} onChange={(e) => setVitalInput({...vitalInput, bp: e.target.value})} placeholder="0/0" />
               </div>
               <div className="vital-input-card">
                 <label>Oxygen (SpO2 %)</label>
-                <input 
-                  type="number" 
-                  value={vitalInput.spo2} 
-                  onChange={(e) => setVitalInput({...vitalInput, spo2: e.target.value})} 
-                  placeholder="--"
-                />
+                <input type="number" value={vitalInput.spo2} onChange={(e) => setVitalInput({...vitalInput, spo2: e.target.value})} placeholder="--" />
               </div>
             </div>
 
@@ -151,8 +145,21 @@ export default function Tablet() {
             >
               {isSubmitting ? "Synchronizing..." : "Submit Observations"}
             </button>
+            {/* 🚨 HEAD NURSE RESPONSE BANNER */}
+{latestEmergency && latestEmergency.status === "resolved" && latestEmergency.resolutionNotes && (
+  <div className="emergency-response-banner">
+    <div className="response-icon">💬</div>
+    <div className="response-text">
+      <strong>Head Nurse Instructions:</strong>
+      <p>{latestEmergency.resolutionNotes}</p>
+    </div>
+    <span className="response-time">
+      {new Date(latestEmergency.resolvedAt!).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+    </span>
+  </div>
+)}
 
-            {/* --- VITALS HISTORY TABLE --- */}
+            {/* VITALS HISTORY TABLE */}
             <section className="vitals-history-section">
               <div className="section-header">
                 <h3>Recent Observations</h3>
@@ -161,23 +168,14 @@ export default function Tablet() {
               <div className="history-table-wrapper">
                 <table className="history-table">
                   <thead>
-                    <tr>
-                      <th>Time</th>
-                      <th>Type</th>
-                      <th>Reading</th>
-                      <th>Staff</th>
-                    </tr>
+                    <tr><th>Time</th><th>Type</th><th>Reading</th><th>Staff</th></tr>
                   </thead>
                   <tbody>
                     {vitalsHistory?.map((v) => (
                       <tr key={v._id}>
-                        <td className="time-cell">
-                          {new Date(v.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </td>
+                        <td className="time-cell">{new Date(v.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
                         <td><span className={`type-tag ${v.type.toLowerCase()}`}>{v.type}</span></td>
-                        <td className="value-cell">
-                          <strong>{v.value}</strong> <span className="unit">{v.unit}</span>
-                        </td>
+                        <td className="value-cell"><strong>{v.value}</strong> <span className="unit">{v.unit}</span></td>
                         <td className="nurse-id"><code>{v.nurseId}</code></td>
                       </tr>
                     ))}
