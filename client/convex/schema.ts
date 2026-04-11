@@ -23,11 +23,15 @@ export default defineSchema({
 
   // 3. Medications
   medications: defineTable({
-    patientId: v.id("patients"),
-    name: v.string(),
-    dosage: v.string(),
-    frequency: v.string(), 
-  }).index("by_patient", ["patientId"]),
+  patientId: v.id("patients"),
+  name: v.string(),        // e.g., "Aspirin"
+  dosage: v.string(),      // e.g., "100mg"
+  frequency: v.string(),   // e.g., "Once Daily"
+  status: v.string(),      // "scheduled" | "administered"
+  scheduledFor: v.number(),// Timestamp
+  administeredAt: v.optional(v.number()),
+  administeredBy: v.optional(v.string()), // Nurse ID
+}).index("by_patient", ["patientId"]),
 
   // 4. Shifts (Geofenced Monitoring)
   shifts: defineTable({
