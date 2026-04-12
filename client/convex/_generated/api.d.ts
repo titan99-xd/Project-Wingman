@@ -9,6 +9,7 @@
  */
 
 import type * as emergencies from "../emergencies.js";
+import type * as history from "../history.js";
 import type * as meds from "../meds.js";
 import type * as patients from "../patients.js";
 import type * as vitals from "../vitals.js";
@@ -21,6 +22,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   emergencies: typeof emergencies;
+  history: typeof history;
   meds: typeof meds;
   patients: typeof patients;
   vitals: typeof vitals;
