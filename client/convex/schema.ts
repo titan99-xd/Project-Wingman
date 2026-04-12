@@ -27,6 +27,8 @@ export default defineSchema({
   name: v.string(),        // e.g., "Aspirin"
   dosage: v.string(),      // e.g., "100mg"
   frequency: v.string(),   // e.g., "Once Daily"
+  totalDoses: v.number(), 
+  dosesGiven: v.number(),
   status: v.string(),      // "scheduled" | "administered"
   scheduledFor: v.number(),// Timestamp
   administeredAt: v.optional(v.number()),

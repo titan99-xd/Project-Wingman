@@ -7,82 +7,72 @@ import "../styles/tablet.css";
 export default function Tablet() {
   // --- 1. CONVEX HOOKS ---
   const patients = useQuery(api.patients.getActivePatients);
-  const addVitalMutation = useMutation(api.vitals.addVitals);
-  const triggerSOSMutation = useMutation(api.emergencies.triggerSOS); 
   
+  // State
   const [selectedPatientId, setSelectedPatientId] = useState<Id<"patients"> | null>(null);
+  const [vitalInput, setVitalInput] = useState({ hr: "", bp: "", spo2: "" });
+  const [showAddMed, setShowAddMed] = useState(false);
+  const [newMed, setNewMed] = useState({ name: "", dosage: "", frequency: "1x daily" });
+
+  // Queries
   const vitalsHistory = useQuery(api.vitals.getPatientVitals, 
     selectedPatientId ? { patientId: selectedPatientId } : "skip"
   );
-
-  // --- 2. COMPONENT STATE ---
+  const meds = useQuery(api.meds.getPatientMeds, 
+    selectedPatientId ? { patientId: selectedPatientId } : "skip"
+  );
   const latestEmergency = useQuery(api.emergencies.getLatestEmergencyForPatient, 
-  selectedPatientId ? { patientId: selectedPatientId } : "skip"
-);
-  const [vitalInput, setVitalInput] = useState({ hr: "", bp: "", spo2: "" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+    selectedPatientId ? { patientId: selectedPatientId } : "skip"
+  );
 
-  // --- 3. AUTO-SELECT FIRST PATIENT ---
+  // Mutations
+  const addVital = useMutation(api.vitals.addVitals);
+  const triggerSOS = useMutation(api.emergencies.triggerSOS);
+  const administer = useMutation(api.meds.administerMed);
+  const prescribeMed = useMutation(api.meds.addMedication);
+
+  // --- 2. LOGIC: AUTO-SELECT PATIENT ---
+  // We use a specific check to ensure we only set this once when patients load
   useEffect(() => {
-    if (patients && patients.length > 0 && !selectedPatientId) {
+    if (patients && patients.length > 0 && selectedPatientId === null) {
       setSelectedPatientId(patients[0]._id);
     }
   }, [patients, selectedPatientId]);
 
   const selectedPatient = patients?.find(p => p._id === selectedPatientId);
 
-  // --- 4. LOGIC: TRIGGER EMERGENCY SOS ---
-  const handleSOS = async () => {
-    if (!selectedPatientId || !selectedPatient) return;
+  // --- 3. HANDLERS ---
+  const handlePrescribe = async () => {
+    if (!newMed.name || !newMed.dosage || !selectedPatientId) return;
 
-    // Clinical safety check (prevent accidental taps)
-    const confirmed = window.confirm(`URGENT: Trigger SOS for ${selectedPatient.name} in Room ${selectedPatient.roomNumber}?`);
+    // Convert frequency string (e.g., "3x daily") to number 3
+    const doseCount = parseInt(newMed.frequency.split('x')[0]) || 1;
 
-    if (confirmed) {
-      try {
-        await triggerSOSMutation({
-          patientId: selectedPatientId,
-          nurseId: "TABLET_PRO_01", // Placeholder for current device ID
-        });
-        alert("🚨 SOS SIGNAL SENT. Emergency Hub has been notified.");
-      } catch (err) {
-        console.error("SOS Error:", err);
-        alert("Failed to send SOS. Check system connection!");
-      }
+    try {
+      await prescribeMed({ 
+        patientId: selectedPatientId, 
+        name: newMed.name, 
+        dosage: newMed.dosage, 
+        frequency: newMed.frequency,
+        totalDoses: doseCount 
+      });
+      
+      setNewMed({ name: "", dosage: "", frequency: "1x daily" });
+      setShowAddMed(false);
+    } catch (err) {
+      console.error("Prescription Error:", err);
     }
   };
 
-  // --- 5. LOGIC: SAVE VITALS ---
-  const handleSaveVitals = async () => {
+  const handleSOS = async () => {
     if (!selectedPatientId) return;
-    if (!vitalInput.hr && !vitalInput.bp && !vitalInput.spo2) {
-      alert("Please enter at least one vital sign value.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    const timestamp = Date.now();
-    const nurseId = "SYSTEM"; 
-
-    try {
-      const mutations = [];
-      if (vitalInput.hr) mutations.push(addVitalMutation({ patientId: selectedPatientId, nurseId, type: "HR", value: vitalInput.hr, unit: "bpm", timestamp }));
-      if (vitalInput.bp) mutations.push(addVitalMutation({ patientId: selectedPatientId, nurseId, type: "BP", value: vitalInput.bp, unit: "mmHg", timestamp }));
-      if (vitalInput.spo2) mutations.push(addVitalMutation({ patientId: selectedPatientId, nurseId, type: "SpO2", value: vitalInput.spo2, unit: "%", timestamp }));
-
-      await Promise.all(mutations);
-      setVitalInput({ hr: "", bp: "", spo2: "" });
-    } catch (err) {
-      console.error("Submission Error:", err);
-      alert("Error: Data mismatch.");
-    } finally {
-      setIsSubmitting(false);
+    if (window.confirm(`Trigger Emergency SOS?`)) {
+      await triggerSOS({ patientId: selectedPatientId, nurseId: "TABLET_PRO_01" });
     }
   };
 
   return (
     <div className="tablet-container">
-      {/* SIDEBAR: PATIENT LIST */}
       <aside className="tablet-sidebar">
         <div className="sidebar-header">
           <h2>Ward</h2>
@@ -106,94 +96,94 @@ export default function Tablet() {
         </div>
       </aside>
 
-      {/* MAIN WORKSPACE */}
       <main className="tablet-main">
         {selectedPatient ? (
           <div className="observation-deck">
             <header className="deck-header">
               <div className="patient-profile">
                 <h1>{selectedPatient.name}</h1>
-                <p className="medical-history">
-                  <strong>Clinical History:</strong> {selectedPatient.medicalHistory}
-                </p>
+                <p className="medical-history"><strong>History:</strong> {selectedPatient.medicalHistory}</p>
               </div>
-              {/* 🚨 Updated Button with handleSOS */}
-              <button className="sos-btn" onClick={handleSOS}>
-                TRIGGER SOS
-              </button>
+              <button className="sos-btn" onClick={handleSOS}>TRIGGER SOS</button>
             </header>
 
-            <div className="vitals-grid">
-              <div className="vital-input-card">
-                <label>Heart Rate (BPM)</label>
-                <input type="number" value={vitalInput.hr} onChange={(e) => setVitalInput({...vitalInput, hr: e.target.value})} placeholder="--" />
+            {/* Emergency Response Banner */}
+            {latestEmergency?.status === "resolved" && (
+              <div className="emergency-response-banner">
+                <div className="response-icon">💬</div>
+                <div className="response-text">
+                  <strong>Head Nurse Response:</strong>
+                  <p>{latestEmergency.resolutionNotes || "On my way."}</p>
+                </div>
               </div>
-              <div className="vital-input-card">
-                <label>Blood Pressure</label>
-                <input type="text" value={vitalInput.bp} onChange={(e) => setVitalInput({...vitalInput, bp: e.target.value})} placeholder="0/0" />
-              </div>
-              <div className="vital-input-card">
-                <label>Oxygen (SpO2 %)</label>
-                <input type="number" value={vitalInput.spo2} onChange={(e) => setVitalInput({...vitalInput, spo2: e.target.value})} placeholder="--" />
-              </div>
-            </div>
+            )}
 
-            <button 
-              className={`save-vitals-btn ${isSubmitting ? 'loading' : ''}`} 
-              onClick={handleSaveVitals}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Synchronizing..." : "Submit Observations"}
-            </button>
-            {/* 🚨 HEAD NURSE RESPONSE BANNER */}
-{latestEmergency && latestEmergency.status === "resolved" && latestEmergency.resolutionNotes && (
-  <div className="emergency-response-banner">
-    <div className="response-icon">💬</div>
-    <div className="response-text">
-      <strong>Head Nurse Instructions:</strong>
-      <p>{latestEmergency.resolutionNotes}</p>
-    </div>
-    <span className="response-time">
-      {new Date(latestEmergency.resolvedAt!).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-    </span>
-  </div>
-)}
-
-            {/* VITALS HISTORY TABLE */}
-            <section className="vitals-history-section">
+            {/* 💊 MEDICATION RECORD (MAR) */}
+            <section className="meds-section">
               <div className="section-header">
-                <h3>Recent Observations</h3>
-                <span className="live-sync-indicator">LIVE SYNC</span>
+                <h3>Medication Record (MAR)</h3>
+                <button className="add-med-toggle" onClick={() => setShowAddMed(!showAddMed)}>
+                  {showAddMed ? "✕ Cancel" : "+ Prescribe"}
+                </button>
               </div>
-              <div className="history-table-wrapper">
-                <table className="history-table">
-                  <thead>
-                    <tr><th>Time</th><th>Type</th><th>Reading</th><th>Staff</th></tr>
-                  </thead>
-                  <tbody>
-                    {vitalsHistory?.map((v) => (
-                      <tr key={v._id}>
-                        <td className="time-cell">{new Date(v.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
-                        <td><span className={`type-tag ${v.type.toLowerCase()}`}>{v.type}</span></td>
-                        <td className="value-cell"><strong>{v.value}</strong> <span className="unit">{v.unit}</span></td>
-                        <td className="nurse-id"><code>{v.nurseId}</code></td>
-                      </tr>
-                    ))}
-                    {vitalsHistory?.length === 0 && (
-                      <tr><td colSpan={4} className="empty-history">No history found.</td></tr>
-                    )}
-                  </tbody>
-                </table>
+
+              {showAddMed && (
+                <div className="add-med-form">
+                  <input placeholder="Med Name" value={newMed.name} onChange={e => setNewMed({...newMed, name: e.target.value})} />
+                  <input placeholder="Dosage" value={newMed.dosage} onChange={e => setNewMed({...newMed, dosage: e.target.value})} />
+                  <select className="freq-select" value={newMed.frequency} onChange={e => setNewMed({...newMed, frequency: e.target.value})}>
+                    <option value="1x daily">1x daily</option>
+                    <option value="2x daily">2x daily</option>
+                    <option value="3x daily">3x daily</option>
+                    <option value="4x daily">4x daily</option>
+                    <option value="5x daily">5x daily</option>
+                    <option value="6x daily">6x daily</option>
+                    <option value="7x daily">7x daily</option>
+                    <option value="8x daily">8x daily</option>
+
+                  </select>
+                  <button className="save-med-btn" onClick={handlePrescribe}>Save</button>
+                </div>
+              )}
+
+              <div className="meds-list-vertical">
+                {meds?.map((med) => {
+                  const dosesGiven = med.dosesGiven || 0;
+                  const total = med.totalDoses || 1;
+                  const isDone = dosesGiven >= total;
+                  return (
+                    <div key={med._id} className={`med-row ${isDone ? 'complete' : ''}`}>
+                      <div className="med-identity">
+                        <h4>{med.name}</h4>
+                        <p>{med.dosage} • {med.frequency}</p>
+                      </div>
+                      <div className="dose-tracker">
+                        <span className="dose-label">Dose {dosesGiven} / {total}</span>
+                        <div className="progress-bar">
+                          <div className="progress-fill" style={{ width: `${(dosesGiven/total)*100}%` }}></div>
+                        </div>
+                      </div>
+                      <div className="med-action">
+                        {isDone ? <span className="check-tag">✅ COMPLETE</span> : 
+                        <button className="administer-btn-outline" onClick={() => administer({ medId: med._id, nurseId: "NURSE_01" })}>Log Dose</button>}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </section>
+
+            {/* Vitals Grid */}
+            <div className="vitals-grid">
+              <div className="vital-input-card"><label>HR</label><input type="number" value={vitalInput.hr} onChange={e => setVitalInput({...vitalInput, hr: e.target.value})} placeholder="--" /></div>
+              <div className="vital-input-card"><label>BP</label><input type="text" value={vitalInput.bp} onChange={e => setVitalInput({...vitalInput, bp: e.target.value})} placeholder="0/0" /></div>
+              <div className="vital-input-card"><label>SpO2</label><input type="number" value={vitalInput.spo2} onChange={e => setVitalInput({...vitalInput, spo2: e.target.value})} placeholder="--" /></div>
+            </div>
+            
+            <button className="save-vitals-btn">Submit Observations</button>
           </div>
         ) : (
-          <div className="empty-deck">
-            <div className="empty-state-content">
-              <span className="empty-icon">📋</span>
-              <p>Select a patient card to begin clinical observations.</p>
-            </div>
-          </div>
+          <div className="empty-deck">Select a patient to begin.</div>
         )}
       </main>
     </div>
