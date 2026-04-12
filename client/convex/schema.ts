@@ -6,9 +6,14 @@ export default defineSchema({
   users: defineTable({
     name: v.string(),
     email: v.string(),
+    password: v.string(),      // Added for the 15-person demo login
     role: v.union(v.literal("admin"), v.literal("nurse")),
     tokenIdentifier: v.string(), 
-  }).index("by_token", ["tokenIdentifier"]),
+    isCheckIn: v.boolean(),    // Tracks if they passed the Geofence/PIN check
+    status: v.string(),        // "active" | "on_leave" | "off_duty"
+  })
+  .index("by_token", ["tokenIdentifier"])
+  .index("by_email", ["email"]),
 
   // 2. Patient Information
   patients: defineTable({
@@ -17,23 +22,25 @@ export default defineSchema({
     sex: v.union(v.literal("Male"), v.literal("Female"), v.literal("Other")),
     medicalHistory: v.string(),
     roomNumber: v.string(),
-    status: v.string(), // "Stable", "Unstable", "Critical"
+    status: v.string(),        // "Stable", "Unstable", "Critical"
     active: v.boolean(),
-  }),
+    assignedNurseId: v.optional(v.id("users")), // For direct nurse filtering
+    handoverNotes: v.optional(v.string()),      // Notes for shift changes
+  }).index("by_assigned_nurse", ["assignedNurseId"]),
 
   // 3. Medications
   medications: defineTable({
-  patientId: v.id("patients"),
-  name: v.string(),        // e.g., "Aspirin"
-  dosage: v.string(),      // e.g., "100mg"
-  frequency: v.string(),   // e.g., "Once Daily"
-  totalDoses: v.number(), 
-  dosesGiven: v.number(),
-  status: v.string(),      // "scheduled" | "administered"
-  scheduledFor: v.number(),// Timestamp
-  administeredAt: v.optional(v.number()),
-  administeredBy: v.optional(v.string()), // Nurse ID
-}).index("by_patient", ["patientId"]),
+    patientId: v.id("patients"),
+    name: v.string(),        
+    dosage: v.string(),      
+    frequency: v.string(),   
+    totalDoses: v.number(), 
+    dosesGiven: v.number(),
+    status: v.string(),      // "scheduled" | "administered"
+    scheduledFor: v.number(),
+    administeredAt: v.optional(v.number()),
+    administeredBy: v.optional(v.string()), 
+  }).index("by_patient", ["patientId"]),
 
   // 4. Shifts (Geofenced Monitoring)
   shifts: defineTable({
@@ -47,6 +54,9 @@ export default defineSchema({
       v.literal("completed"), 
       v.literal("flagged")    
     ),
+    leaveRequested: v.optional(v.boolean()), // Tracks sick leave status
+    leaveReason: v.optional(v.string()),
+    isOverrideUsed: v.optional(v.boolean()), // Tracks if 4-digit PIN was used
     checkInDetails: v.optional(v.object({
       time: v.number(),
       lat: v.number(),
@@ -55,7 +65,7 @@ export default defineSchema({
     })),
   }).index("by_nurse", ["nurseId"]).index("by_status", ["status"]),
 
-  // 5. Shift Assignments 
+  // 5. Shift Assignments (Linking shifts to patients)
   assignments: defineTable({
     shiftId: v.id("shifts"),
     patientId: v.id("patients"),
@@ -66,7 +76,7 @@ export default defineSchema({
   // 6. Clinical Vitals
   vitals: defineTable({
     patientId: v.id("patients"),
-    nurseId: v.string(), // FIX: Changed to string to allow "SYSTEM" or manual entries
+    nurseId: v.string(), 
     type: v.union(v.literal("BP"), v.literal("HR"), v.literal("Temp"), v.literal("SpO2")),
     value: v.string(),
     unit: v.string(),
@@ -93,4 +103,21 @@ export default defineSchema({
     timestamp: v.number(),
     metadata: v.any(),        
   }).index("by_action", ["action"]),
+
+  // 9. Leave Requests (Manual Approval Table)
+  leaveRequests: defineTable({
+    userId: v.id("users"),
+    shiftId: v.id("shifts"),
+    reason: v.string(),
+    status: v.union(v.literal("pending"), v.literal("approved"), v.literal("rejected")),
+    requestTime: v.number(),
+  }).index("by_status", ["status"]),
+
+  // 10. System Settings (Global Config)
+  systemSettings: defineTable({
+    overridePin: v.string(),      // "8822"
+    hospitalLat: v.number(),      // Classroom Lat
+    hospitalLong: v.number(),     // Classroom Long
+    geofenceRadius: v.number(),   // Distance (e.g., 500000 for Finland)
+  }),
 });
