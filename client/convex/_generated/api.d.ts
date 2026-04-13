@@ -12,6 +12,8 @@ import type * as emergencies from "../emergencies.js";
 import type * as history from "../history.js";
 import type * as meds from "../meds.js";
 import type * as patients from "../patients.js";
+import type * as seed from "../seed.js";
+import type * as users from "../users.js";
 import type * as vitals from "../vitals.js";
 
 import type {
@@ -25,6 +27,8 @@ declare const fullApi: ApiFromModules<{
   history: typeof history;
   meds: typeof meds;
   patients: typeof patients;
+  seed: typeof seed;
+  users: typeof users;
   vitals: typeof vitals;
 }>;
 
