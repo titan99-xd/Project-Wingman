@@ -1,75 +1,69 @@
 import { useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import "../../styles/admin-login.css";
+import "../styles/login.css";
 
-export default function AdminLogin() {
-  const navigate = useNavigate();
-
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Fetch the user data based on email
+  const user = useQuery(api.users.getUserByEmail, { email });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setLoading(true);
 
-    try {
-      const response = await axios.post("http://localhost:5050/api/auth/login", {
-        email,
-        password,
-      });
-
-      const { token } = response.data;
-
-      // Save token
-      localStorage.setItem("token", token);
-
-      // Redirect to admin dashboard
-      navigate("/admin");
-    } catch (err: unknown) {
-      // Optional logging
-      console.error("Login error:", err);
-
-      // Safe error display
-      setError("Invalid email or password");
-    } finally {
-      setLoading(false);
+    if (user && user.password === password) {
+      // Store the logged-in user in localStorage for demo persistence
+      localStorage.setItem("user", JSON.stringify(user));
+      
+      // Route based on role
+      if (user.role === "admin") {
+        navigate("/manager"); 
+      } else {
+        navigate("/gatekeeper"); 
+      }
+    } else {
+      alert("Invalid credentials. Please check your email and password.");
     }
   };
 
   return (
-    <div className="admin-login-container">
-      <form className="admin-login-form" onSubmit={handleSubmit}>
-        <h2 className="admin-title">Admin Login</h2>
-
-        {error && <p className="admin-error">{error}</p>}
-
-        <label>Email</label>
-        <input
-          type="email"
-          placeholder="admin@example.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-
-        <label>Password</label>
-        <input
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        <button type="submit" disabled={loading} className="admin-login-btn">
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+    <div className="login-screen">
+      <div className="login-panel">
+        <div className="hospital-logo">🏥</div>
+        <h1>WardPro Systems</h1>
+        <p className="subtitle">Clinical Staff Authentication</p>
+        
+        <form onSubmit={handleLogin}>
+          <div className="field">
+            <label>Staff Email</label>
+            <input 
+              type="email" 
+              placeholder="nurse1@hospital.com" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required 
+            />
+          </div>
+          <div className="field">
+            <label>Access Password</label>
+            <input 
+              type="password" 
+              placeholder="••••••••" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required 
+            />
+          </div>
+          <button type="submit" className="login-action-btn">Sign In</button>
+        </form>
+        <div className="demo-hint">
+          Demo: <strong>nurse1@hospital.com</strong> / <strong>password123</strong>
+        </div>
+      </div>
     </div>
   );
 }
