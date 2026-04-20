@@ -131,3 +131,46 @@
     font-weight: 600;
   }
 }
+
+/* Container for name and button */
+.user-profile-section {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Spacing between name and button */
+  margin-right: 10px;
+}
+
+/* The Nurse's Name */
+.user-name-display {
+  font-weight: 600;
+  color: #334155;
+  font-size: 0.9rem;
+  border-right: 1px solid #e2e8f0; /* Optional: adds a small divider */
+  padding-right: 15px;
+}
+
+/* The Logout Button */
+.logout-nav-btn {
+  background-color: transparent;
+  color: #ef4444; /* Clinical red for exit actions */
+  border: 1px solid #fecaca;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-nav-btn:hover {
+  background-color: #fef2f2;
+  border-color: #ef4444;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .user-profile-section {
+    display: none; /* Hide on mobile to keep header clean; mobile menu handles it */
+  }
+}
