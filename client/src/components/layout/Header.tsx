@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import sentryxLogo from '../../assets/sentryx_logo.png'
 import '../../styles/header.css';
 
-// The isClinical prop now only controls the Emergency Hub button
 export default function Header({ isClinical }: { isClinical?: boolean }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
+
+  // Retrieve user session data
+  const userStr = localStorage.getItem("user");
+  const user = userStr ? JSON.parse(userStr) : null;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,57 +21,81 @@ export default function Header({ isClinical }: { isClinical?: boolean }) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    closeMobileMenu();
+    navigate("/login");
+  };
+
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
   const closeMobileMenu = () => setIsMobileMenuOpen(false)
   
   const isActive = (path: string) => location.pathname.toLowerCase() === path.toLowerCase()
 
+  // If user is a nurse, clicking the logo keeps them in the clinical app
+  const logoTarget = user?.role === 'nurse' ? '/Tablet' : '/';
+
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
       <div className="header-container">
         
-        {/* 1. LOGO SECTION (Left) */}
-        <Link to="/" className="logo-link" onClick={closeMobileMenu}>
-          <img 
-            src={sentryxLogo} 
-            alt="Sentryx Health" 
-            className="logo"
-          />
+        {/* 1. LOGO SECTION */}
+        <Link to={logoTarget} className="logo-link" onClick={closeMobileMenu}>
+          <img src={sentryxLogo} alt="Sentryx Health" className="logo" />
         </Link>
 
-        {/* 2. DESKTOP NAVIGATION (Center - Hidden on Mobile via CSS) */}
+        {/* 2. DESKTOP NAVIGATION */}
         <nav className="desktop-nav">
-          <Link to="/" className={`nav-link ${isActive('/') ? 'active' : ''}`}>
-            <span className="nav-text">Home</span>
-            <span className="nav-indicator"></span>
-          </Link>
-          <Link to="/Manager" className={`nav-link ${isActive('/Manager') ? 'active' : ''}`}>
-            <span className="nav-text">Manager</span>
-            <span className="nav-indicator"></span>
-          </Link>
-          <Link to="/Tablet" className={`nav-link ${isActive('/Tablet') ? 'active' : ''}`}>
-            <span className="nav-text">Tablet</span>
-            <span className="nav-indicator"></span>
-          </Link>
-          <Link to="/Security" className={`nav-link ${isActive('/Security') ? 'active' : ''}`}>
-            <span className="nav-text">Security</span>
-            <span className="nav-indicator"></span>
-          </Link>
-        </nav>
-
-        {/* 3. RIGHT SECTION (Emergency Hub + Mobile Hamburger) */}
-        <div className="header-cta-group">
-          {/* Emergency Hub hides on Clinical pages, but the Hamburger stays! */}
-          {!isClinical && (
-            <div className="header-cta">
-              <button className="cta-button" onClick={() => window.location.href="/EmergencyHub"}>
-                <span className="cta-text">Emergency Hub</span>
-                <div className="cta-icon">→</div>
-              </button>
-            </div>
+          
+          {/* Home is hidden for nurses to keep them focused on clinical tools */}
+          {user?.role !== 'nurse' && (
+            <Link to="/" className={`nav-link ${isActive('/') ? 'active' : ''}`}>
+              <span className="nav-text">Home</span>
+              <span className="nav-indicator"></span>
+            </Link>
           )}
 
-          {/* MOBILE MENU BUTTON - Now outside any conditional checks */}
+          {/* ADMIN ONLY TOOLS */}
+          {user?.role === 'admin' && (
+            <>
+              <Link to="/Manager" className={`nav-link ${isActive('/Manager') ? 'active' : ''}`}>
+                <span className="nav-text">Manager</span>
+                <span className="nav-indicator"></span>
+              </Link>
+              <Link to="/EmergencyHub" className={`nav-link ${isActive('/EmergencyHub') ? 'active' : ''}`}>
+                <span className="nav-text">Emergency Hub</span>
+                <span className="nav-indicator"></span>
+              </Link>
+              <Link to="/Security" className={`nav-link ${isActive('/Security') ? 'active' : ''}`}>
+                <span className="nav-text">Security</span>
+                <span className="nav-indicator"></span>
+              </Link>
+            </>
+          )}
+
+          {/* TABLET ACCESS (Visible to both Roles if logged in) */}
+          {user && (
+            <Link to="/Tablet" className={`nav-link ${isActive('/Tablet') ? 'active' : ''}`}>
+              <span className="nav-text">{user.role === 'admin' ? 'Tablet' : 'My Tablet'}</span>
+              <span className="nav-indicator"></span>
+            </Link>
+          )}
+        </nav>
+
+        {/* 3. RIGHT SECTION - User Profile & Logout */}
+        <div className="header-cta-group">
+          {user ? (
+            <div className="user-profile-section">
+              <span className="user-name-display">{user.name}</span>
+              <button className="logout-nav-btn" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className="login-nav-link">Staff Login</Link>
+          )}
+
+          {/* MOBILE MENU BUTTON */}
           <button 
             className={`mobile-menu-btn ${isMobileMenuOpen ? 'active' : ''}`}
             onClick={toggleMobileMenu}
@@ -80,42 +108,43 @@ export default function Header({ isClinical }: { isClinical?: boolean }) {
         </div>
       </div>
 
+      {/* MOBILE NAVIGATION OVERLAY */}
       <nav className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
         <div className="mobile-nav-content">
           <div className="mobile-nav-header">
             <span className="mobile-nav-title">Sentryx Menu</span>
-            <button className="mobile-close-btn" onClick={closeMobileMenu}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M18 6L6 18M6 6L18 18" strokeLinecap="round"/>
-              </svg>
-            </button>
+            <button className="mobile-close-btn" onClick={closeMobileMenu}>✕</button>
           </div>
           
           <div className="mobile-nav-links">
-            <Link to="/" className={`mobile-nav-link ${isActive('/') ? 'active' : ''}`} onClick={closeMobileMenu}>
-              <span className="mobile-link-icon">🏠</span>
-              <span className="mobile-link-text">Home</span>
-            </Link>
-            <Link to="/Manager" className={`mobile-nav-link ${isActive('/Manager') ? 'active' : ''}`} onClick={closeMobileMenu}>
-              <span className="mobile-link-icon">📋</span>
-              <span className="mobile-link-text">Ward Manager</span>
-            </Link>
-            <Link to="/Tablet" className={`mobile-nav-link ${isActive('/Tablet') ? 'active' : ''}`} onClick={closeMobileMenu}>
-              <span className="mobile-link-icon">📱</span>
-              <span className="mobile-link-text">Nurse Tablet</span>
-            </Link>
-            <Link to="/Security" className={`mobile-nav-link ${isActive('/Security') ? 'active' : ''}`} onClick={closeMobileMenu}>
-              <span className="mobile-link-icon">🛡️</span>
-              <span className="mobile-link-text">Security & Logs</span>
-            </Link>
+            {user?.role !== 'nurse' && (
+              <Link to="/" className="mobile-nav-link" onClick={closeMobileMenu}>🏠 Home</Link>
+            )}
+
+            {user?.role === 'admin' && (
+              <>
+                <Link to="/Manager" className="mobile-nav-link" onClick={closeMobileMenu}>📋 Manager</Link>
+                <Link to="/EmergencyHub" className="mobile-nav-link" onClick={closeMobileMenu}>🚨 Emergency Hub</Link>
+                <Link to="/Security" className="mobile-nav-link" onClick={closeMobileMenu}>🛡️ Security</Link>
+              </>
+            )}
+
+            {user && (
+              <Link to="/Tablet" className="mobile-nav-link" onClick={closeMobileMenu}>
+                📱 {user.role === 'admin' ? 'Clinical Tablet' : 'My Tablet'}
+              </Link>
+            )}
+
+            {user ? (
+              <button className="mobile-logout-btn" onClick={handleLogout}>Logout ({user.name})</button>
+            ) : (
+              <Link to="/login" className="mobile-nav-link" onClick={closeMobileMenu}>Staff Login</Link>
+            )}
           </div>
         </div>
       </nav>
 
-      {/* Overlay for Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="mobile-menu-overlay" onClick={closeMobileMenu}></div>
-      )}
+      {isMobileMenuOpen && <div className="mobile-menu-overlay" onClick={closeMobileMenu}></div>}
     </header>
   )
 }
