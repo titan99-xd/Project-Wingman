@@ -34,12 +34,12 @@ export default function Login() {
     <div className="login-screen">
       <div className="login-panel">
         <div className="hospital-logo">🏥</div>
-        <h1>WardPro Systems</h1>
-        <p className="subtitle">Clinical Staff Authentication</p>
+        <h1>SentryX</h1>
+        <p className="subtitle">Staff Authentication</p>
         
         <form onSubmit={handleLogin}>
           <div className="field">
-            <label>Staff Email</label>
+            <label>Email</label>
             <input 
               type="email" 
               placeholder="nurse1@hospital.com" 
@@ -49,7 +49,7 @@ export default function Login() {
             />
           </div>
           <div className="field">
-            <label>Access Password</label>
+            <label>Password</label>
             <input 
               type="password" 
               placeholder="••••••••" 
@@ -60,9 +60,9 @@ export default function Login() {
           </div>
           <button type="submit" className="login-action-btn">Sign In</button>
         </form>
-        <div className="demo-hint">
+        {/* <div className="demo-hint">
           Demo: <strong>nurse1@hospital.com</strong> / <strong>password123</strong>
-        </div>
+        </div> */}
       </div>
     </div>
   );
