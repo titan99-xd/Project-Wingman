@@ -26,6 +26,7 @@ export default defineSchema({
     active: v.boolean(),
     assignedNurseId: v.optional(v.id("users")), // For direct nurse filtering
     handoverNotes: v.optional(v.string()),      // Notes for shift changes
+    lastUpdated: v.optional(v.number()),  // Timestamp for sorting and updates
   }).index("by_assigned_nurse", ["assignedNurseId"]),
 
   // 3. Medications
