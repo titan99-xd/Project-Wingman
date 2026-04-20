@@ -6,7 +6,6 @@ import "../styles/gatekeeper.css";
 
 export default function Gatekeeper() {
   const navigate = useNavigate();
-  // Get user from local storage (set during login)
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   
   // Convex Hooks
@@ -17,6 +16,22 @@ export default function Gatekeeper() {
   const [isVerifying, setIsVerifying] = useState(false);
   const [showPin, setShowPin] = useState(false);
   const [pinInput, setPinInput] = useState("");
+
+  // --- NEW: Logout Function (Since Header is gone) ---
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
+
+  /**
+   * Helper function to update the local session state.
+   * This is CRITICAL so the App.tsx ProtectedRoute knows you are verified.
+   */
+  const finalizeCheckIn = () => {
+    const updatedUser = { ...user, isCheckIn: true };
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    navigate("/tablet");
+  };
 
   const runLocationCheck = () => {
     setIsVerifying(true);
@@ -33,7 +48,6 @@ export default function Gatekeeper() {
         console.log("Location verified:", latitude, longitude);
 
         try {
-          // --- MANDATORY: Update the database that this nurse is now active ---
           if (user._id) {
             await checkIn({ 
               nurseId: user._id, 
@@ -42,18 +56,17 @@ export default function Gatekeeper() {
             });
           }
 
-          // Small delay for the "verified" feeling before navigating
-          setTimeout(() => {
-            navigate("/tablet");
-          }, 1500);
+          // Update memory and move forward
+          finalizeCheckIn();
+          
         } catch (error) {
           console.error("Check-in failed:", error);
           setIsVerifying(false);
         }
       },
-      (err: GeolocationPositionError) => { // Added Type to fix the red squiggle
-        console.warn("GPS Error:", err.message);
-        alert("GPS Signal Failed or Permission Denied. Please use the Manual PIN.");
+      (err: GeolocationPositionError) => { 
+        console.warn("Geolocation Error Detail:", err.message); 
+        alert("GPS Signal Failed. Please use the Manual PIN.");
         setIsVerifying(false);
         setShowPin(true);
       },
@@ -63,7 +76,7 @@ export default function Gatekeeper() {
 
   const handlePinUnlock = () => {
     if (pinInput === settings?.overridePin) {
-      navigate("/tablet");
+      finalizeCheckIn();
     } else {
       alert("Invalid PIN. Please ask the Head Nurse for the code.");
     }
@@ -71,6 +84,10 @@ export default function Gatekeeper() {
 
   return (
     <div className="gatekeeper-layout">
+      <button className="gatekeeper-logout-btn" onClick={handleLogout}>
+        ← Logout & Switch Account
+      </button>
+
       <div className="gatekeeper-card">
         <div className="security-icon">{isVerifying ? "🛰️" : "📍"}</div>
         <h2>Proximity Check</h2>
