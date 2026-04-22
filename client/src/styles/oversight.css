@@ -1,0 +1,272 @@
+.oversight-page {
+  padding: 20px;
+  background: #0f172a; /* Dark professional navy */
+  min-height: 100vh;
+  color: white;
+}
+
+.oversight-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.live-tag {
+  background: #ef4444;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  animation: blink 2s infinite;
+}
+
+.oversight-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+}
+
+/* Heatmap Grid */
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+}
+
+.cell {
+  background: #1e293b;
+  aspect-ratio: 1/1;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.7rem;
+  border: 1px solid #334155;
+  transition: transform 0.2s;
+}
+
+.cell:hover { transform: scale(1.05); z-index: 10; border-color: white; }
+
+.cell.stable { border-bottom: 3px solid #10b981; }
+.cell.unstable { border-bottom: 3px solid #f59e0b; }
+.cell.critical { 
+  border-bottom: 3px solid #ef4444; 
+  background: #450a0a;
+  animation: danger-pulse 2s infinite;
+}
+
+.cell-nurse { opacity: 0.6; font-size: 0.6rem; }
+
+@keyframes danger-pulse {
+  0% { box-shadow: inset 0 0 0px #ef4444; }
+  50% { box-shadow: inset 0 0 15px #ef4444; }
+  100% { box-shadow: inset 0 0 0px #ef4444; }
+}
+
+/* Personnel Section Makeover */
+.staff-visual-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns of staff chips */
+  gap: 10px;
+}
+
+.staff-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #1e293b;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  transition: 0.3s;
+}
+
+.staff-chip.active { border-color: #10b981; background: #064e3b33; }
+
+.avatar {
+  width: 32px; height: 32px;
+  background: #334155;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  position: relative;
+}
+
+.pulse-dot {
+  position: absolute; bottom: 0; right: 0;
+  width: 10px; height: 10px; background: #10b981;
+  border-radius: 50%; border: 2px solid #0f172a;
+}
+
+/* Nurse Lane Layout */
+.nurse-lanes {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.nurse-lane {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #1e293b55;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.lane-header {
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+}
+
+.lane-nurse-name { font-weight: bold; color: #94a3b8; font-size: 0.8rem; }
+.lane-count { font-size: 0.6rem; color: #64748b; }
+
+.lane-cells {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cell {
+  width: 45px; height: 45px; /* Smaller cells to fit the row */
+  background: #1e293b;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  border-bottom: 3px solid #334155;
+}
+
+.cell.critical { border-color: #ef4444; background: #450a0a; color: #fecaca; }
+.cell.unstable { border-color: #f59e0b; background: #451a03; color: #fef3c7; }
+.cell.stable { border-color: #10b981; background: #064e3b; color: #d1fae5; }
+
+
+
+/* Fix for the top-right stats overlapping */
+.quick-stats {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.s-label {
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.s-value {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* New Personnel Status Board (Rows) */
+.staff-status-board {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #1e293b44;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+}
+
+.staff-status-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+/* The "LED" Dot Indicators */
+.status-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: relative;
+}
+
+/* Green Glow for Onsite */
+.status-led.on {
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+/* Red Glow for Offsite */
+.status-led.off {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+}
+
+.nurse-display-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #e2e8f0;
+}
+
+/* Optional: Subtle divider between staff rows */
+.staff-status-row:not(:last-child) {
+  border-bottom: 1px solid #33415544;
+  padding-bottom: 8px;
+}
+
+/* Staff Status Board Styling */
+.staff-status-board {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #1e293b44;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+}
+
+.staff-status-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #33415544;
+}
+
+/* The LED Dots */
+.status-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.status-led.on {
+  background: #10b981; /* Green */
+  box-shadow: 0 0 10px #10b981, 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+.status-led.off {
+  background: #ef4444; /* Red */
+  box-shadow: 0 0 10px #ef4444, 0 0 20px rgba(239, 68, 68, 0.4);
+}
+
+.nurse-display-name {
+  font-size: 0.95rem;
+  color: #e2e8f0;
+  font-weight: 500;
+}
