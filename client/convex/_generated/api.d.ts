@@ -10,6 +10,7 @@
 
 import type * as emergencies from "../emergencies.js";
 import type * as history from "../history.js";
+import type * as manager from "../manager.js";
 import type * as meds from "../meds.js";
 import type * as patients from "../patients.js";
 import type * as seed from "../seed.js";
@@ -27,6 +28,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   emergencies: typeof emergencies;
   history: typeof history;
+  manager: typeof manager;
   meds: typeof meds;
   patients: typeof patients;
   seed: typeof seed;
