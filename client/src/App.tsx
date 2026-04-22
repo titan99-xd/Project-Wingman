@@ -8,12 +8,13 @@ import ScrollToTop from "./components/ScrollToTop";
 import ContactButton from "./components/ui/contact-me-btn";
 
 // Authentication & Security Pages
-import Login from "./pages/login"; // Keeping your specific file casing
+import Login from "./pages/login"; 
 import Gatekeeper from "./pages/Gatekeeper";
 
 // Sentryx Clinical/Admin Pages
 import Home from "./pages/Home";
 import Manager from "./pages/Manager";  
+import Oversight from "./pages/Oversight"; // 🟢 NEW PAGE IMPORT
 import Tablet from "./pages/Tablet";     
 import Security from "./pages/Security"; 
 import EmergencyHub from "./pages/EmergencyHub"; 
@@ -23,8 +24,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import "./App.css";
 
 /**
- * 🔒 SMART PROTECTED ROUTE
- * Handles: 1. Identity (Login), 2. Authorization (Role), 3. Physical Presence (Geofence)
+ * 🔒PROTECTED ROUTE
  */
 const ProtectedRoute = ({ 
   children, 
@@ -37,17 +37,14 @@ const ProtectedRoute = ({
   const userStr = localStorage.getItem("user");
   const user = userStr ? JSON.parse(userStr) : null;
   
-  // 1. Check Identity: Not logged in? Go to Login
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // 2. Check Authorization: If route is Admin-only (Manager/Security) and user is a Nurse
   if (allowRole === "admin" && user.role !== "admin") {
     return <Navigate to="/gatekeeper" replace />;
   }
 
-  // 3. Check Geofence: If Nurse tries to access Tablet without passing Check-In
   const isTabletRoute = location.pathname.toLowerCase() === "/tablet";
   if (user.role === "nurse" && isTabletRoute && !user.isCheckIn) {
     return <Navigate to="/gatekeeper" replace />;
@@ -60,21 +57,26 @@ function LayoutWrapper() {
   const location = useLocation();
   const path = location.pathname.toLowerCase();
 
-  /**
-   * UI ADAPTATION LOGIC
-   */
   // 1. Hide Header entirely on security-sensitive entry pages
   const isGatekeeperOrLogin = path === "/gatekeeper" || path === "/login";
 
   // 2. Identify all "App" routes to hide the public marketing footer
-  const appRoutes = ["/login", "/gatekeeper", "/manager", "/tablet", "/security", "/emergencyhub"];
+  const appRoutes = [
+    "/login", 
+    "/gatekeeper", 
+    "/manager", 
+    "/oversight", 
+    "/tablet", 
+    "/security", 
+    "/emergencyhub"
+  ];
+
   const isAppRoute = appRoutes.some(route => path.startsWith(route));
 
   return (
     <div className="app-container">
       <ScrollToTop />
       
-      {/* 🔴 Header is now REMOVED from Gatekeeper and Login for extra security */}
       {!isGatekeeperOrLogin && <Header isClinical={isAppRoute} />}
 
       {!isAppRoute && <ContactButton />}
@@ -92,10 +94,16 @@ function LayoutWrapper() {
           
           {/* --- PROTECTED CLINICAL ROUTES --- */}
           
-          {/* Manager: Admin Only */}
+          {/* Manager: Admin Only (Admissions/Discharges) */}
           <Route 
             path="/manager" 
             element={<ProtectedRoute allowRole="admin"><Manager /></ProtectedRoute>} 
+          />
+
+          {/* 🟢 NEW ROUTE: Oversight (Admin Only - Heatmap/Monitoring) */}
+          <Route 
+            path="/oversight" 
+            element={<ProtectedRoute allowRole="admin"><Oversight /></ProtectedRoute>} 
           />
 
           {/* Security: Admin Only */}
@@ -104,13 +112,13 @@ function LayoutWrapper() {
             element={<ProtectedRoute allowRole="admin"><Security /></ProtectedRoute>} 
           />
 
-          {/* Emergency Hub: Admin Only (as per your request to move from Home) */}
+          {/* Emergency Hub: Admin Only  */}
           <Route 
             path="/emergencyhub" 
             element={<ProtectedRoute allowRole="admin"><EmergencyHub /></ProtectedRoute>} 
           />
 
-          {/* Tablet: Accessible by both, but Nurses are forced through Geofence */}
+          {/* Tablet: Accessible by both, Nurses forced through Geofence */}
           <Route 
             path="/tablet" 
             element={<ProtectedRoute><Tablet /></ProtectedRoute>} 
