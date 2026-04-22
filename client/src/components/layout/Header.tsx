@@ -58,14 +58,23 @@ export default function Header({ isClinical }: { isClinical?: boolean }) {
           {/* ADMIN ONLY TOOLS */}
           {user?.role === 'admin' && (
             <>
+              {/* 🟢 NEW: Ward Oversight (The God View) */}
+              <Link to="/Oversight" className={`nav-link ${isActive('/Oversight') ? 'active' : ''}`}>
+                <span className="nav-text">Oversight</span>
+                <span className="nav-indicator"></span>
+              </Link>
+              
+              {/* 📝 Manager (Registry/Admissions) */}
               <Link to="/Manager" className={`nav-link ${isActive('/Manager') ? 'active' : ''}`}>
                 <span className="nav-text">Manager</span>
                 <span className="nav-indicator"></span>
               </Link>
+
               <Link to="/EmergencyHub" className={`nav-link ${isActive('/EmergencyHub') ? 'active' : ''}`}>
                 <span className="nav-text">Emergency Hub</span>
                 <span className="nav-indicator"></span>
               </Link>
+              
               <Link to="/Security" className={`nav-link ${isActive('/Security') ? 'active' : ''}`}>
                 <span className="nav-text">Security</span>
                 <span className="nav-indicator"></span>
@@ -123,6 +132,7 @@ export default function Header({ isClinical }: { isClinical?: boolean }) {
 
             {user?.role === 'admin' && (
               <>
+                <Link to="/Oversight" className="mobile-nav-link" onClick={closeMobileMenu}>🛰️ Oversight</Link>
                 <Link to="/Manager" className="mobile-nav-link" onClick={closeMobileMenu}>📋 Manager</Link>
                 <Link to="/EmergencyHub" className="mobile-nav-link" onClick={closeMobileMenu}>🚨 Emergency Hub</Link>
                 <Link to="/Security" className="mobile-nav-link" onClick={closeMobileMenu}>🛡️ Security</Link>
