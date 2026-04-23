@@ -16,6 +16,7 @@ import type * as patients from "../patients.js";
 import type * as seed from "../seed.js";
 import type * as settings from "../settings.js";
 import type * as shifts from "../shifts.js";
+import type * as staffing from "../staffing.js";
 import type * as users from "../users.js";
 import type * as vitals from "../vitals.js";
 
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   seed: typeof seed;
   settings: typeof settings;
   shifts: typeof shifts;
+  staffing: typeof staffing;
   users: typeof users;
   vitals: typeof vitals;
 }>;

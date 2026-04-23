@@ -126,3 +126,149 @@
   color: #1e293b;
   border-color: #94a3b8;
 }
+
+.gatekeeper-container {
+  display: flex;
+  gap: 30px;
+  max-width: 900px;
+  width: 95%;
+  align-items: stretch;
+}
+
+.logistics-card {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 15px;
+}
+
+.date-tag {
+  background: #e2e8f0;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.detail-item label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+.detail-item p {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 4px;
+}
+
+.sick-leave-btn {
+  margin-top: auto;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 2px solid #fecaca;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sick-leave-btn:hover {
+  background: #fecaca;
+}
+
+/* Status Colors */
+.status-pending { color: #f59e0b; }
+.status-active { color: #10b981; }
+
+@media (max-width: 768px) {
+  .gatekeeper-container {
+    flex-direction: column;
+  }
+}
+.schedule-list {
+  max-height: 250px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding-right: 5px;
+}
+
+.schedule-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border-left: 4px solid #cbd5e1;
+}
+
+.schedule-item.active {
+  border-left-color: #10b981; /* Green for today's active shift */
+  background: #ecfdf5;
+}
+
+.schedule-item.flagged {
+  border-left-color: #ef4444; /* Red for sick leave */
+  background: #fef2f2;
+}
+
+.shift-date { font-weight: 600; color: #475569; }
+.shift-floor { color: #64748b; font-size: 0.9rem; }
+.shift-tag {
+  background: #1e293b;
+  color: white;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 0.7rem;
+}
+.schedule-item {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.schedule-item.selected {
+  background: #fff1f2; /* Light red/pink tint */
+  border-color: #fda4af;
+  transform: scale(0.98);
+}
+
+.selection-indicator {
+  margin-right: 15px;
+  font-size: 1.2rem;
+}
+
+.sick-leave-btn {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.sick-leave-btn.active {
+  opacity: 1;
+  pointer-events: auto;
+  background: #e11d48;
+  color: white;
+  border-color: #be123c;
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+}

@@ -10,6 +10,7 @@ import ContactButton from "./components/ui/contact-me-btn";
 // Authentication & Security Pages
 import Login from "./pages/login"; 
 import Gatekeeper from "./pages/Gatekeeper";
+import Settings from "./pages/Settings";
 
 // Sentryx Clinical/Admin Pages
 import Home from "./pages/Home";
@@ -87,6 +88,8 @@ function LayoutWrapper() {
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          // Inside your App.tsx routes:
+          <Route path="/settings" element={<Settings />} />
 
           {/* --- AUTHENTICATION FLOW --- */}
           <Route path="/login" element={<Login />} />
