@@ -19,7 +19,6 @@ export const getUserByEmail = query({
  */
 export const listNurses = query({
   handler: async (ctx) => {
-    // This looks at the 'role' field we defined in your schema
     return await ctx.db
       .query("users")
       .filter((q) => q.eq(q.field("role"), "nurse"))

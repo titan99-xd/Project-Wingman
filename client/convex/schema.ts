@@ -17,11 +17,11 @@ export default defineSchema({
 
   // 🟢 2. Global Settings 
   settings: defineTable({
-    overridePin: v.string(),      // e.g., "8822"
-    wardName: v.string(),         // e.g., "General Ward"
+    overridePin: v.string(),      
+    wardName: v.string(),         
     hospitalLat: v.number(),      
     hospitalLong: v.number(),     
-    gpsRadius: v.number(),        // Accuracy radius in meters
+    gpsRadius: v.number(),        
   }),
 
   // 3. Patient Information
@@ -58,7 +58,7 @@ export default defineSchema({
     date: v.string(), 
     startTime: v.number(), 
     endTime: v.number(),   
-    status: v.string(),    // "pending" | "active" | "completed" | "flagged"
+    status: v.string(),    
     floorNumber: v.optional(v.number()), 
     shiftType: v.optional(v.string()),   
     leaveRequested: v.optional(v.boolean()), 

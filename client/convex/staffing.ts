@@ -42,7 +42,7 @@ export const assignShift = mutation({
         date: args.date,
         floorNumber: args.floorNumber, 
         shiftType: args.shiftType,    
-        startTime: 0, // Placeholder for future time-tracking
+        startTime: 0, 
         endTime: 0,
         status: "pending",
       });
@@ -129,8 +129,8 @@ export const reportSick = mutation({
 });
 
 /**
- *  6. GET EMERGENCY ABSENCES (WITH NAMES)
- * The "Brain" of the Manager Alert Banner. Looks up nurse names on-the-fly.
+ *  6. GET EMERGENCY ABSENCES 
+ * The "Brain" of the Manager Alert Banner.
  */
 export const getEmergencyAbsences = query({
   handler: async (ctx) => {
@@ -162,13 +162,12 @@ export const getEmergencyAbsences = query({
   },
 });
 /**
- * 🗑️ 7. REMOVE SHIFT
+ *  7. REMOVE SHIFT
  * Deletes a shift entry entirely.
  */
 export const removeShift = mutation({
   args: { shiftId: v.id("shifts") },
   handler: async (ctx, args) => {
-    // Optional: Fetch shift info before deleting to make the audit log more detailed
     const shift = await ctx.db.get(args.shiftId);
 
     await ctx.db.delete(args.shiftId);
