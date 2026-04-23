@@ -55,6 +55,8 @@ export default defineSchema({
       v.literal("completed"), 
       v.literal("flagged")    
     ),
+    floorNumber: v.optional(v.number()), // Added for the 15-Day Roster
+    shiftType: v.optional(v.string()),   // "Morning", "Afternoon", "Night"
     leaveRequested: v.optional(v.boolean()), // Tracks sick leave status
     leaveReason: v.optional(v.string()),
     isOverrideUsed: v.optional(v.boolean()), // Tracks if 4-digit PIN was used
