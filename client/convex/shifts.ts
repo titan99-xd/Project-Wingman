@@ -2,36 +2,38 @@ import { mutation } from "./_generated/server";
 import { v } from "convex/values";
 
 /**
- * Updates a nurse's shift status to 'active' once they pass 
- * the Geofence or PIN check.
+ * 📍 Geofence Check-In: Activates the specific shift and verifies location
  */
 export const checkIn = mutation({
   args: { 
     nurseId: v.id("users"), 
+    shiftId: v.id("shifts"), 
     lat: v.number(), 
     lng: v.number() 
   },
   handler: async (ctx, args) => {
-    // Find the most recent 'pending' shift for this nurse
-    const activeShift = await ctx.db
-      .query("shifts")
-      .withIndex("by_nurse", (q) => q.eq("nurseId", args.nurseId))
-      .filter((q) => q.eq(q.field("status"), "pending"))
-      .first();
+    // 1. Activate the specific shift
+    await ctx.db.patch(args.shiftId, {
+      status: "active",
+      startTime: Date.now(),
+      checkInDetails: {
+        time: Date.now(),
+        lat: args.lat,
+        lng: args.lng,
+        distanceFromHospital: 0, 
+      }
+    });
+    
+    // 2. Update the user's session status
+    await ctx.db.patch(args.nurseId, { isCheckIn: true });
 
-    if (activeShift) {
-      await ctx.db.patch(activeShift._id, {
-        status: "active",
-        checkInDetails: {
-          time: Date.now(),
-          lat: args.lat,
-          lng: args.lng,
-          distanceFromHospital: 0, 
-        }
-      });
-      
-      // Also update the user's check-in status
-      await ctx.db.patch(args.nurseId, { isCheckIn: true });
-    }
+    // 3. 🛡️ Create Security Audit Log
+    await ctx.db.insert("auditLogs", {
+      userId: args.nurseId.toString(),
+      action: "GEOFENCE_CHECK_IN",
+      targetId: args.shiftId.toString(),
+      timestamp: Date.now(),
+      metadata: { lat: args.lat, lng: args.lng }
+    });
   },
 });
