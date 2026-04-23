@@ -1,6 +1,6 @@
 .oversight-page {
   padding: 20px;
-  background: #0f172a; /* Dark professional navy */
+  background: #0f172a; 
   min-height: 100vh;
   color: white;
 }
@@ -70,7 +70,7 @@
 /* Personnel Section Makeover */
 .staff-visual-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Two columns of staff chips */
+  grid-template-columns: 1fr 1fr; 
   gap: 10px;
 }
 
@@ -136,7 +136,7 @@
 }
 
 .cell {
-  width: 45px; height: 45px; /* Smaller cells to fit the row */
+  width: 45px; height: 45px; 
   background: #1e293b;
   border-radius: 6px;
   display: flex;
@@ -151,9 +151,6 @@
 .cell.unstable { border-color: #f59e0b; background: #451a03; color: #fef3c7; }
 .cell.stable { border-color: #10b981; background: #064e3b; color: #d1fae5; }
 
-
-
-/* Fix for the top-right stats overlapping */
 .quick-stats {
   display: flex;
   gap: 20px;

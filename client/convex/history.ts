@@ -50,8 +50,6 @@ export const getClinicalTimeline = query({
 
 /**
  *  2. GET SYSTEM AUDIT LOGS
- * Global ledger for the Security page. 
- * Now includes Staff Name lookups with strict TypeScript IDs.
  */
 export const getAuditLogs = query({
   handler: async (ctx) => {
