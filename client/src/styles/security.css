@@ -177,3 +177,58 @@
 .detail-none {
   color: #cbd5e1;
 }
+/* Emergency / Crisis Tag */
+.action-tag.emergency {
+  background: #fee2e2;
+  color: #ef4444;
+  border: 1px solid #fecaca;
+}
+
+.user-identity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-identity code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.verified-badge {
+  color: #10b981;
+  font-weight: 800;
+  font-size: 0.7rem;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.detail-text {
+  font-size: 0.85rem;
+  color: #475569;
+  font-style: italic;
+  max-width: 200px;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.staff-name-display {
+  font-size: 0.9rem;
+  color: #1e293b;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.user-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8fafc; /* Subtle background for the identity cell */
+  padding: 6px 12px;
+  border-radius: 8px;
+  width: fit-content;
+}
