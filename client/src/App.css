@@ -1,10 +1,4 @@
 /* ===================================
-   DEBUG: If you see this red line, CSS is working!
-   Once confirmed, you can delete this line.
-   =================================== */
-.app-container { border-top: 5px solid red !important; }
-
-/* ===================================
    1. DESIGN TOKENS & GLOBALS
    =================================== */
 :root {
@@ -31,11 +25,11 @@ body {
   background-color: var(--color-light);
   color: var(--color-dark);
   min-height: 100vh;
-  overflow-x: hidden; /* Prevents unwanted horizontal scrolling */
+  overflow-x: hidden; 
 }
 
 /* ===================================
-   2. MASTER LAYOUT (The Overlap Fix)
+   2. MASTER LAYOUT 
    =================================== */
 .app-container {
   display: flex;
@@ -47,10 +41,8 @@ body {
 .app-main {
   flex: 1;
   width: 100%;
-  max-width: 1280px; /* The "Lane" width */
-  margin: 0 auto;    /* Centers the content */
-  
-  /* THE MAGIC FIX: Pushes content below the fixed header */
+  max-width: 1280px; 
+  margin: 0 auto;    
   padding-top: 140px !important; 
   padding-left: 2rem;
   padding-right: 2rem;
@@ -67,7 +59,7 @@ body {
 }
 
 /* ===================================
-   3. FOOTER CENTERING (The Halfway Fix)
+   3. FOOTER CENTERING 
    =================================== */
 .footer {
   width: 100% !important;
@@ -79,16 +71,14 @@ body {
 }
 
 .footer-container {
-  /* This MUST match the max-width of .app-main to stay aligned */
   max-width: 1280px !important; 
   width: 100% !important;
-  margin: 0 auto !important; /* FORCES Centering on screen */
+  margin: 0 auto !important; 
   padding: 0 2rem !important;
 }
 
 .footer-main {
   display: grid !important;
-  /* Forces the 3 columns to span the full 1280px width */
   grid-template-columns: repeat(3, 1fr) !important; 
   gap: 3rem !important;
   width: 100% !important;
@@ -96,7 +86,7 @@ body {
 
 .footer-bottom-content {
   display: flex !important;
-  justify-content: space-between !important; /* Rights Left, Privacy Right */
+  justify-content: space-between !important; 
   align-items: center !important;
   width: 100% !important;
   padding-top: 2rem !important;
@@ -141,7 +131,7 @@ body {
   border-radius: 10px;
   font-size: 1rem;
   background: #fff;
-  color: #1a202c !important; /* Fix for invisible text */
+  color: #1a202c !important;
 }
 
 .admit-btn {
@@ -211,11 +201,11 @@ body {
 .status-badge.stable { background: #ccfbf1; color: #0f766e; border: 1px solid #99f6e4; }
 
 /* ===================================
-   THE FINAL FOOTER SPREAD
+        FOOTER SPREAD
    =================================== */
 
 .footer-container {
-  max-width: 1280px !important; /* Matches your Header exactly */
+  max-width: 1280px !important; 
   margin: 0 auto !important;
   width: 100% !important;
   padding: 0 2rem !important;
@@ -223,13 +213,11 @@ body {
 
 .footer-main {
   display: grid !important;
-  /* Forces 3 columns to share the 1280px space equally */
   grid-template-columns: 1fr 1fr 1fr !important; 
   width: 100% !important;
   gap: 2rem !important;
 }
 
-/* Force each column to align its own text to the left */
 .footer-column {
   text-align: left !important;
   display: flex !important;
@@ -237,7 +225,6 @@ body {
   align-items: flex-start !important;
 }
 
-/* This pushes the Copyright left and Privacy right */
 .footer-bottom-content {
   display: flex !important;
   justify-content: space-between !important;
@@ -247,7 +234,7 @@ body {
 }
 
 /* ===================================
-   7. TABLET RESPONSIVENESS (1024px)
+   7. TABLET RESPONSIVENESS 
    =================================== */
 @media (max-width: 1024px) {
   .app-main {
@@ -256,13 +243,11 @@ body {
     padding-right: 1.5rem;
   }
 
-  /* Manager: Stack the Intake Form on top of the Ward Directory */
   .manager-page {
     grid-template-columns: 1fr !important;
     gap: 2rem;
   }
 
-  /* Tablet View: Shift from side-by-side to a focused list */
   .tablet-container {
     flex-direction: column;
     height: auto;
@@ -278,14 +263,12 @@ body {
 }
 
 /* ===================================
-   8. MOBILE RESPONSIVENESS (768px)
+   8. MOBILE RESPONSIVENESS 
    =================================== */
 @media (max-width: 768px) {
-  /* Header: Hide the Hub button text to save space */
   .cta-text { display: none; }
   .cta-button { padding: 0.8rem; border-radius: 50%; }
 
-  /* Footer: Stack the 3 columns vertically */
   .footer-main {
     grid-template-columns: 1fr !important;
     text-align: center !important;
@@ -316,7 +299,7 @@ body {
 }
 
 /* ===================================
-   IPAD & TABLET HEADER FIX (1024px)
+   IPAD & TABLET HEADER  (1024px)
    =================================== */
 
 @media (max-width: 1100px) {
@@ -419,7 +402,6 @@ body {
   min-height: 400px;
 }
 
-/* 4. FORM FIELD CLEANUP (Fixing the Sex/Age/Room inputs) */
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -427,7 +409,6 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* MOBILE FIX FOR MANAGER */
 @media (max-width: 1024px) {
   .manager-grid {
     grid-template-columns: 1fr !important;
@@ -440,7 +421,7 @@ body {
 .manager-page {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Keep them centered */
+  align-items: center;
   width: 100%;
   padding-bottom: 4rem;
 }
@@ -448,11 +429,11 @@ body {
 /* 1. Make the cards take up most of the screen width */
 .admission-card, 
 .directory-card {
-  width: 95% !important;        /* Fill 95% of the screen width */
-  max-width: 1200px !important;  /* But don't let it get ridiculously huge on ultra-wide monitors */
+  width: 95% !important;       
+  max-width: 1200px !important;  
   background: white;
   border-radius: 24px;
-  padding: 3rem;                 /* Increased internal padding for a "pro" look */
+  padding: 3rem;                
   margin-bottom: 2rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
   border: 1px solid #edf2f7;

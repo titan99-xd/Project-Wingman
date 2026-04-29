@@ -59,7 +59,6 @@ export default function Oversight() {
             ) : (
               staff.map(nurse => (
                 <div key={nurse._id} className="staff-status-row">
-                  {/* Glowing LED: Green for Onsite, Red for Offsite */}
                   <div className={`status-led ${nurse.isCheckIn ? 'on' : 'off'}`}></div>
                   <span className="nurse-display-name">{nurse.name}</span>
                 </div>
@@ -68,7 +67,7 @@ export default function Oversight() {
           </div>
         </aside>
 
-        {/* --- MAIN AREA: PATIENT DISTRIBUTION HEATMAP --- */}
+        {/* ---  PATIENT DISTRIBUTION HEATMAP --- */}
         <main className="heatmap-section">
           <h2>Ward Distribution Heatmap</h2>
           <div className="nurse-lanes">
@@ -89,7 +88,6 @@ export default function Oversight() {
                         className={`cell ${patient.status.toLowerCase()}`}
                         title={`${patient.name} - ${patient.status}`}
                       >
-                        {/* Show room number (strips 'S-' for space) */}
                         <span className="cell-room">
                           {patient.roomNumber.replace('S-', '')}
                         </span>
