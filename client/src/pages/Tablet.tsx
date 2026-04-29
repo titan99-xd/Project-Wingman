@@ -8,7 +8,7 @@ export default function Tablet() {
   const userStr = localStorage.getItem("user");
   const user = userStr ? JSON.parse(userStr) : null;
 
-  // --- 1. UPDATED CONVEX HOOKS ---
+  // --- 1. DATA FETCHING ---
   const patients = useQuery(api.patients.getMyAssignedPatients, { nurseId: user?._id });
   const [selectedPatientId, setSelectedPatientId] = useState<Id<"patients"> | null>(null);
   
@@ -20,22 +20,17 @@ export default function Tablet() {
   const triggerSOS = useMutation(api.emergencies.triggerSOS);
   const administer = useMutation(api.meds.administerMed);
   const prescribeMed = useMutation(api.meds.addMedication);
-  
-  // 🟢 NEW: Handover mutation
   const updateHandover = useMutation(api.patients.updateHandoverNotes);
 
   // --- 2. COMPONENT STATE ---
   const [vitalInput, setVitalInput] = useState({ hr: "", bp: "", spo2: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAddMed, setShowAddMed] = useState(false);
-  const [newMed, setNewMed] = useState({ name: "", dosage: "", frequency: "1x daily" });
-  
-  // 🟢 NEW: Local state for handover text
+  const [newMed, setNewMed] = useState({ name: "", dosage: "", frequency: "1x daily", totalDoses: 1 });
   const [handoverNote, setHandoverNote] = useState("");
 
   const selectedPatient = patients?.find(p => p._id === selectedPatientId);
 
-  // Sync handover note when patient changes
   useEffect(() => {
     if (selectedPatient) {
       setHandoverNote(selectedPatient.handoverNotes || "");
@@ -79,9 +74,16 @@ export default function Tablet() {
 
   const handlePrescribe = async () => {
     if (!newMed.name || !newMed.dosage || !selectedPatientId) return;
-    const doseCount = parseInt(newMed.frequency.split('x')[0]) || 1;
-    await prescribeMed({ patientId: selectedPatientId, name: newMed.name, dosage: newMed.dosage, frequency: newMed.frequency, totalDoses: doseCount });
-    setNewMed({ name: "", dosage: "", frequency: "1x daily" });
+    
+    await prescribeMed({ 
+      patientId: selectedPatientId, 
+      name: newMed.name, 
+      dosage: newMed.dosage, 
+      frequency: newMed.frequency, 
+      totalDoses: newMed.totalDoses 
+    });
+    
+    setNewMed({ name: "", dosage: "", frequency: "1x daily", totalDoses: 1 });
     setShowAddMed(false);
   };
 
@@ -93,7 +95,10 @@ export default function Tablet() {
     }
   };
 
-  const sortedMeds = meds ? [...meds].sort((a, b) => a.status === "scheduled" ? -1 : 1) : [];
+  const sortedMeds = meds ? [...meds].sort((a, b) => {
+    if (a.status === "scheduled" && b.status === "administered") return -1;
+    return 0;
+  }) : [];
 
   return (
     <div className="tablet-container">
@@ -131,7 +136,18 @@ export default function Tablet() {
               <button className="sos-btn" onClick={handleSOS}>🚨 TRIGGER SOS</button>
             </header>
 
-            {/* 🟢 NEW: HANDOVER LOG SECTION */}
+            {/*  HEAD NURSE RESPONSE BANNER */}
+            {latestEmergency?.status === "resolved" && latestEmergency.resolutionNotes && (
+              <div className="emergency-response-banner">
+                <div className="response-icon">💬</div>
+                <div className="response-text">
+                  <strong>Head Nurse Response:</strong>
+                  <p>{latestEmergency.resolutionNotes}</p>
+                </div>
+              </div>
+            )}
+
+            {/* HANDOVER LOG SECTION */}
             <section className="handover-box">
               <div className="section-header">
                 <h3>Shift Handover Notes</h3>
@@ -140,7 +156,7 @@ export default function Tablet() {
               <textarea 
                 value={handoverNote}
                 onChange={(e) => setHandoverNote(e.target.value)}
-                placeholder="Describe current patient state, recent interventions, or specific risks for the incoming nurse..."
+                placeholder="Describe current patient state for the incoming nurse..."
               />
               <button className="save-handover-btn" onClick={handleSaveHandover}>
                 Update Handover
@@ -160,31 +176,103 @@ export default function Tablet() {
               </button>
             </section>
 
-            {/* MEDICATION RECORD (MAR) */}
+            {/*  MEDICATION RECORD  SECTION */}
             <section className="meds-section">
               <div className="section-header">
                 <h3>Medication (MAR)</h3>
-                <button className="add-med-toggle-btn" onClick={() => setShowAddMed(!showAddMed)}>{showAddMed ? "✕" : "+ New"}</button>
+                <button className="add-med-toggle-btn" onClick={() => setShowAddMed(!showAddMed)}>
+                  {showAddMed ? "✕" : "+ New"}
+                </button>
               </div>
+
               {showAddMed && (
                 <div className="prescription-form-box">
-                  <input placeholder="Name" value={newMed.name} onChange={e => setNewMed({...newMed, name: e.target.value})} />
-                  <input placeholder="Dose" value={newMed.dosage} onChange={e => setNewMed({...newMed, dosage: e.target.value})} />
-                  <button onClick={handlePrescribe}>Add to MAR</button>
+                  <input 
+                    placeholder="Name" 
+                    value={newMed.name} 
+                    onChange={e => setNewMed({...newMed, name: e.target.value})} 
+                  />
+                  <input 
+                    placeholder="Dose (e.g. 500mg)" 
+                    value={newMed.dosage} 
+                    onChange={e => setNewMed({...newMed, dosage: e.target.value})} 
+                  />
+                  <input 
+                    type="number"
+                    min="1"
+                    placeholder="Total Doses" 
+                    value={newMed.totalDoses} 
+                    onChange={e => setNewMed({...newMed, totalDoses: parseInt(e.target.value) || 1})} 
+                  />
+                  <button onClick={handlePrescribe}>Add</button>
                 </div>
               )}
+
               <div className="meds-list-vertical">
-                {sortedMeds.map((med) => (
-                  <div key={med._id} className={`med-list-item ${med.dosesGiven >= med.totalDoses ? 'complete' : ''}`}>
-                    <div className="med-info-block"><h4>{med.name}</h4><p>{med.dosage} • {med.frequency}</p></div>
-                    <div className="med-action-block">
-                      {med.dosesGiven >= med.totalDoses ? <span className="given-tag">GIVEN</span> : 
-                      <button className="log-dose-btn" onClick={() => administer({ medId: med._id, nurseId: user._id })}>Log Dose</button>}
+                {sortedMeds.map((med) => {
+                  const dosesGiven = med.dosesGiven || 0;
+                  const total = med.totalDoses || 1;
+                  const isDone = dosesGiven >= total;
+                  
+                  return (
+                    <div key={med._id} className={`med-list-item ${isDone ? 'complete' : ''}`}>
+                      <div className="med-info-block">
+                        <h4>{med.name}</h4>
+                        <p>{med.dosage} • {med.frequency}</p>
+                        {!isDone && <small className="dose-progress">{dosesGiven} / {total} doses administered</small>}
+                      </div>
+                      <div className="med-action-block">
+                        {isDone ? (
+                          <span className="given-tag">GIVEN</span>
+                        ) : (
+                          <button 
+                            className="log-dose-btn" 
+                            onClick={() => administer({ medId: med._id, nurseId: user._id })}
+                          >
+                            Log Dose
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
+
+            {/* CLINICAL TIMELINE */}
+            {/* 🟢 FIXED: CLINICAL TIMELINE */}
+<section className="vitals-history-section">
+  <h3>Clinical Timeline</h3>
+  <table className="history-table">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Event</th>
+        <th>Value</th>
+        <th>Staff</th>
+      </tr>
+    </thead>
+    <tbody>
+      {timeline?.map((event) => (
+        <tr key={event.id}>
+          <td>
+            {new Date(event.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </td>
+          <td>
+            <span className={`type-tag ${(event.type || event.label || "").toLowerCase()}`}>
+              {event.type || event.label}
+            </span>
+          </td>
+          <td><strong>{event.value}</strong></td>
+          <td>
+            <code>{event.staff}</code>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</section>
+
           </div>
         ) : (
           <div className="empty-deck">
