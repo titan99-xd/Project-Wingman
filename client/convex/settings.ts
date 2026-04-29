@@ -19,7 +19,7 @@ export const updateSettings = mutation({
   args: {
     id: v.id("settings"),
     overridePin: v.string(),
-    gpsRadius: v.number(), // Required accuracy in meters
+    gpsRadius: v.number(), 
     wardName: v.string(),
   },
   handler: async (ctx, args) => {

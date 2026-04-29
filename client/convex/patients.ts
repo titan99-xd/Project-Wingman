@@ -71,7 +71,7 @@ export const getMyAssignedPatients = query({
 
     if (!shift || !shift.floorNumber) return [];
 
-    // 🏥 DATA: Fetch all active patients and filter by floor digit
+    //  DATA: Fetch all active patients and filter by floor digit
     const allPatients = await ctx.db
       .query("patients")
       .filter((q) => q.eq(q.field("active"), true))

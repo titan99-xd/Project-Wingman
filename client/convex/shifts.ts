@@ -2,7 +2,7 @@ import { mutation } from "./_generated/server";
 import { v } from "convex/values";
 
 /**
- * 📍 Geofence Check-In: Activates the specific shift and verifies location
+ *  Geofence Check-In: Activates the specific shift and verifies location
  */
 export const checkIn = mutation({
   args: { 
@@ -27,7 +27,7 @@ export const checkIn = mutation({
     // 2. Update the user's session status
     await ctx.db.patch(args.nurseId, { isCheckIn: true });
 
-    // 3. 🛡️ Create Security Audit Log
+    // 3.  Create Security Audit Log
     await ctx.db.insert("auditLogs", {
       userId: args.nurseId.toString(),
       action: "GEOFENCE_CHECK_IN",
