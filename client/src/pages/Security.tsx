@@ -27,7 +27,6 @@ export default function Security() {
       <header className="security-header">
         <div className="header-info">
           <h1>System Audit Ledger</h1>
-          {/* <p>Cryptographically signed logs of all clinical activity.</p> */}
         </div>
         <div className="status-indicator">
           <span className="pulse"></span> LIVE MONITORING
@@ -81,7 +80,6 @@ export default function Security() {
                   <td className="log-user">
                     <div className="user-identity">
                        <span className="user-icon">👤</span>
-                       {/* 🟢 FIXED: Now showing the human-readable staff name */}
                        <strong className="staff-name-display">{log.userName}</strong>
                     </div>
                   </td>

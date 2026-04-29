@@ -16,7 +16,6 @@ export default function Login() {
     e.preventDefault();
 
     if (user && user.password === password) {
-      // Store the logged-in user in localStorage for demo persistence
       localStorage.setItem("user", JSON.stringify(user));
       
       // Route based on role
@@ -60,9 +59,9 @@ export default function Login() {
           </div>
           <button type="submit" className="login-action-btn">Sign In</button>
         </form>
-        {/* <div className="demo-hint">
-          Demo: <strong>nurse1@hospital.com</strong> / <strong>password123</strong>
-        </div> */}
+        <div className="demo-hint">
+          Demo: <strong>nurse(YourGroupNumber)@hospital.com</strong> / <strong>password123</strong>
+        </div>
       </div>
     </div>
   );

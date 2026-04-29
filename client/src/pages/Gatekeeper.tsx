@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import type { Id } from "../../convex/_generated/dataModel"; 
 import "../styles/gatekeeper.css";
 
-// --- 📐 DISTANCE HELPER (Haversine Formula) ---
+// ---  (Haversine Formula) ---
 // Calculates distance between two points in meters
 const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
   const R = 6371000; // Earth's radius in meters
@@ -67,7 +67,7 @@ export default function Gatekeeper() {
           settings.hospitalLong
         );
 
-        // 🛡️ VERIFY AGAINST SETTINGS RADIUS
+        //  VERIFY AGAINST SETTINGS RADIUS
         if (distance <= settings.gpsRadius) {
           try {
             if (user?._id && todayShift) {
@@ -193,7 +193,7 @@ export default function Gatekeeper() {
 
         <div className="gatekeeper-card">
           <div className="security-icon">{isVerifying ? "🛰️" : "🛡️"}</div>
-          {/* 🟢 DYNAMIC WARD NAME */}
+          {/*  DYNAMIC WARD NAME */}
           <h2>{settings?.wardName || "Ward"} Access</h2>
           <p className="user-label">Logged in as: <strong>{user.name}</strong></p>
           <p className="gatekeeper-subtext">

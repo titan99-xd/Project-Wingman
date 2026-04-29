@@ -15,7 +15,7 @@ export default defineSchema({
   .index("by_token", ["tokenIdentifier"])
   .index("by_email", ["email"]),
 
-  // 🟢 2. Global Settings 
+  //  2. Global Settings 
   settings: defineTable({
     overridePin: v.string(),      
     wardName: v.string(),         
