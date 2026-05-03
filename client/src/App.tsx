@@ -22,6 +22,7 @@ import EmergencyHub from "./pages/EmergencyHub";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 
+
 import "./App.css";
 
 /**
@@ -69,7 +70,8 @@ function LayoutWrapper() {
     "/oversight", 
     "/tablet", 
     "/security", 
-    "/emergencyhub"
+    "/emergencyhub",
+    "/settings",
   ];
 
   const isAppRoute = appRoutes.some(route => path.startsWith(route));

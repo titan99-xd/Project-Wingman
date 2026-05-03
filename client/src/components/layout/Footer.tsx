@@ -42,7 +42,7 @@ export default function Footer() {
             <h3 className="footer-heading" style={{ color: '#4169E1', marginBottom: '1.5rem' }}>Contact Us</h3>
             <ul className="footer-contact" style={{ listStyle: 'none', padding: 0 }}>
               <li style={{ marginBottom: '1rem' }}>
-                <a href="mailto:info@trinovatech.fi" className="contact-link">abhinavgautam3166@gmail.com</a>
+                <a href="mailto:info@trinovatech.fi" className="contact-link">info@sentryx.fi</a>
               </li>
               <li style={{ marginBottom: '1rem' }}>
                 <a href="tel:+358407017910" className="contact-link">+358 417425877</a>
