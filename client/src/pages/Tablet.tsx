@@ -52,7 +52,7 @@ export default function Tablet() {
         notes: handoverNote,
         nurseId: user._id
       });
-      alert("Handover updated for next shift! 📝");
+      alert("Handover updated for next shift! ");
     } catch (err) {
       console.error("Handover update failed", err);
     }
@@ -240,7 +240,6 @@ export default function Tablet() {
             </section>
 
             {/* CLINICAL TIMELINE */}
-            {/* 🟢 FIXED: CLINICAL TIMELINE */}
 <section className="vitals-history-section">
   <h3>Clinical Timeline</h3>
   <table className="history-table">

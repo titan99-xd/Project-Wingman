@@ -24,7 +24,7 @@ export default function PrivacyPolicy() {
           <div className='privacy-intro'>
             <p>
               This Privacy Policy explains how we ("we", "us", "our website") collect, use, and protect your information when you visit our personal website{' '}
-              <a href="https://trinovatech.fi" target="_blank" rel="noopener noreferrer">https://abhinavgautam.com.np</a>{' '} 
+              <a href="https://sentryx.fi" target="_blank" rel="noopener noreferrer">https://abhinavgautam.com.np</a>{' '} 
               or contact us through it.
             </p>
           </div>
