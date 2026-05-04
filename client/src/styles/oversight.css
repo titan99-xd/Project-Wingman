@@ -1,269 +1,102 @@
 .oversight-page {
-  padding: 20px;
-  background: #0f172a; 
+  padding: 1.5rem;
+  background: #f1f5f9;
   min-height: 100vh;
-  color: white;
+  font-family: 'Inter', sans-serif;
 }
 
-.oversight-header {
+.ov-header h1 { font-size: 1.5rem; margin: 0; font-weight: 800; color: #0f172a; }
+.ov-status { font-size: 0.7rem; font-weight: 700; color: #64748b; display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+.ov-pulse { height: 8px; width: 8px; background: #ef4444; border-radius: 50%; animation: ov-pulse 2s infinite; }
+
+/* --- Top Stats --- */
+.ov-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.ov-stat-card {
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  border-bottom: 4px solid #cbd5e1;
+}
+
+.ov-stat-card label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #64748b; }
+.ov-stat-val { font-size: 1.8rem; font-weight: 800; color: #1e293b; }
+
+.ov-stat-card.stable { border-color: #10b981; }
+.ov-stat-card.warning { border-color: #f59e0b; }
+.ov-stat-card.danger { border-color: #ef4444; }
+
+/* --- Main Layout --- */
+.ov-main-content {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.5rem;
+}
+
+.ov-section-title { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; color: #475569; margin-bottom: 1rem; }
+
+/* --- SOS Feed --- */
+.ov-alert-card {
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  border-left: 6px solid #ef4444;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+}
+
+.ov-room { font-size: 1.2rem; font-weight: 900; color: #ef4444; }
+.ov-time { font-size: 0.75rem; color: #94a3b8; }
+.ov-resolve-btn {
+  width: 100%; margin-top: 10px; padding: 8px; background: #1e293b; 
+  color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;
+}
+
+/* --- Heatmap Sidebar --- */
+.ov-heatmap-sidebar {
+  background: white;
+  padding: 1.2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.ov-heatmap-scroll {
+  height: 65vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.ov-heat-row { margin-bottom: 12px; }
+.ov-heat-label { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.ov-f-num { font-weight: 800; font-size: 0.75rem; }
+.ov-f-nurse { font-size: 0.7rem; color: #64748b; font-weight: 600; }
+
+.ov-bar-bg { width: 100%; height: 16px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
+.ov-bar-fill {
+  height: 100%; background: #3b82f6; transition: width 0.5s ease;
+  display: flex; align-items: center; padding-left: 6px;
+}
+
+.ov-count { font-size: 0.6rem; color: white; font-weight: 800; }
+
+.ov-heat-row.heavy .ov-bar-fill { background: #f59e0b; }
+.ov-heat-row.critical .ov-bar-fill { background: #ef4444; }
+
+/* --- Deficit --- */
+.ov-deficit-pill {
+  background: #fee2e2;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+  color: #991b1b;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #1e293b;
-  padding-bottom: 20px;
-  margin-bottom: 20px;
 }
 
-.live-tag {
-  background: #ef4444;
-  font-size: 0.7rem;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: bold;
-  animation: blink 2s infinite;
-}
-
-.oversight-layout {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 20px;
-}
-
-/* Heatmap Grid */
-.heatmap-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 8px;
-}
-
-.cell {
-  background: #1e293b;
-  aspect-ratio: 1/1;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.7rem;
-  border: 1px solid #334155;
-  transition: transform 0.2s;
-}
-
-.cell:hover { transform: scale(1.05); z-index: 10; border-color: white; }
-
-.cell.stable { border-bottom: 3px solid #10b981; }
-.cell.unstable { border-bottom: 3px solid #f59e0b; }
-.cell.critical { 
-  border-bottom: 3px solid #ef4444; 
-  background: #450a0a;
-  animation: danger-pulse 2s infinite;
-}
-
-.cell-nurse { opacity: 0.6; font-size: 0.6rem; }
-
-@keyframes danger-pulse {
-  0% { box-shadow: inset 0 0 0px #ef4444; }
-  50% { box-shadow: inset 0 0 15px #ef4444; }
-  100% { box-shadow: inset 0 0 0px #ef4444; }
-}
-
-/* Personnel Section Makeover */
-.staff-visual-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr; 
-  gap: 10px;
-}
-
-.staff-chip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #1e293b;
-  padding: 8px;
-  border-radius: 12px;
-  border: 1px solid #334155;
-  transition: 0.3s;
-}
-
-.staff-chip.active { border-color: #10b981; background: #064e3b33; }
-
-.avatar {
-  width: 32px; height: 32px;
-  background: #334155;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  position: relative;
-}
-
-.pulse-dot {
-  position: absolute; bottom: 0; right: 0;
-  width: 10px; height: 10px; background: #10b981;
-  border-radius: 50%; border: 2px solid #0f172a;
-}
-
-/* Nurse Lane Layout */
-.nurse-lanes {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.nurse-lane {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  background: #1e293b55;
-  padding: 10px;
-  border-radius: 8px;
-}
-
-.lane-header {
-  width: 120px;
-  display: flex;
-  flex-direction: column;
-}
-
-.lane-nurse-name { font-weight: bold; color: #94a3b8; font-size: 0.8rem; }
-.lane-count { font-size: 0.6rem; color: #64748b; }
-
-.lane-cells {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.cell {
-  width: 45px; height: 45px; 
-  background: #1e293b;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
-  font-weight: bold;
-  border-bottom: 3px solid #334155;
-}
-
-.cell.critical { border-color: #ef4444; background: #450a0a; color: #fecaca; }
-.cell.unstable { border-color: #f59e0b; background: #451a03; color: #fef3c7; }
-.cell.stable { border-color: #10b981; background: #064e3b; color: #d1fae5; }
-
-.quick-stats {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-}
-
-.stat-box {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.s-label {
-  font-size: 0.6rem;
-  letter-spacing: 1px;
-  color: #64748b;
-  text-transform: uppercase;
-}
-
-.s-value {
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-/* New Personnel Status Board (Rows) */
-.staff-status-board {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  background: #1e293b44;
-  padding: 15px;
-  border-radius: 12px;
-  border: 1px solid #334155;
-}
-
-.staff-status-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 4px 0;
-}
-
-/* The "LED" Dot Indicators */
-.status-led {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  position: relative;
-}
-
-/* Green Glow for Onsite */
-.status-led.on {
-  background: #10b981;
-  box-shadow: 0 0 8px #10b981;
-}
-
-/* Red Glow for Offsite */
-.status-led.off {
-  background: #ef4444;
-  box-shadow: 0 0 8px #ef4444;
-}
-
-.nurse-display-name {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #e2e8f0;
-}
-
-/* Optional: Subtle divider between staff rows */
-.staff-status-row:not(:last-child) {
-  border-bottom: 1px solid #33415544;
-  padding-bottom: 8px;
-}
-
-/* Staff Status Board Styling */
-.staff-status-board {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  background: #1e293b44;
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid #334155;
-}
-
-.staff-status-row {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #33415544;
-}
-
-/* The LED Dots */
-.status-led {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-}
-
-.status-led.on {
-  background: #10b981; /* Green */
-  box-shadow: 0 0 10px #10b981, 0 0 20px rgba(16, 185, 129, 0.4);
-}
-
-.status-led.off {
-  background: #ef4444; /* Red */
-  box-shadow: 0 0 10px #ef4444, 0 0 20px rgba(239, 68, 68, 0.4);
-}
-
-.nurse-display-name {
-  font-size: 0.95rem;
-  color: #e2e8f0;
-  font-weight: 500;
-}
+@keyframes ov-pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
