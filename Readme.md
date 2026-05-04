@@ -1,4 +1,4 @@
-# 🏥 SentryX: Ward Command Ecosystem
+# SentryX: Ward Command Ecosystem
 
 **SentryX** is a high-fidelity, real-time medical oversight system designed to bridge the communication gap between the bedside and the boardroom. It transforms fragmented ward data into a cohesive "Mission Control" experience for nurses, head nurses, and ward managers.
 
@@ -7,7 +7,7 @@
 
 ---
 
-## 🚀 Project Purpose
+##  Project Purpose
 In a modern hospital ward, "Data Silence" kills. SentryX was built to solve the latency in emergency response and the inefficiency of manual staffing. By connecting live patient status to a centralized dashboard, SentryX ensures that help is always one millisecond away.
 
 ### Core Pillars:
@@ -17,7 +17,7 @@ In a modern hospital ward, "Data Silence" kills. SentryX was built to solve the 
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 * **Frontend:** React 18, Vite, TypeScript
 * **Backend:** Convex (Real-time BaaS)
 * **Database:** Convex Document Store
@@ -225,17 +225,17 @@ SentryX is built to scale. Future versions of the ecosystem will include:
 - [ ] **Mobile Companion:** A simplified "SentryX Lite" app for paramedics and transit teams.
 - [ ] **Multi-Ward Sync:** Capability to manage multiple hospital wings from a single Global Command Hub.
 
-## 🙌 Acknowledgments
+##  Acknowledgments
 - [Convex](https://www.convex.dev/) for providing the millisecond-latency reactive backend.
 - The healthcare professionals whose feedback shaped the "Mission Control" UI/UX.
 
-## ✉️ Contact
+##  Contact
 **Project Lead:** Abhinav Gautam  
 **Email:** abhinavgautam3166@gmail.com 
 **Project Link:** [https://github.com/titan99-xd/Project-Wingman](https://github.com/titan99-xd/Project-Wingman)
 
-## 📄 License
-This project is licensed under the **MIT License**. It is open for academic and collaborative use.
+##  License
+It is open for academic and collaborative use.
 
 ---
 **© 2026 SentryX Health Systems** *System Status:  All 14 Floors Operational |  Geofence Active*
