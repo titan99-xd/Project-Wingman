@@ -60,7 +60,7 @@ export default function Login() {
           <button type="submit" className="login-action-btn">Sign In</button>
         </form>
         <div className="demo-hint">
-          Demo: <strong>nurse(YourGroupNumber)@hospital.com</strong> / <strong>password123</strong>
+          Demo: <strong>nurse(1-9)@hospital.com</strong> / <strong>password123</strong>
         </div>
       </div>
     </div>
