@@ -1,20 +1,22 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../convex/_generated/api"; // 
 import type { Doc, Id } from "../../convex/_generated/dataModel";
+import ConfirmModal from "../components/ui/ConfirmModal"; 
 import "../styles/settings.css";
 
 // --- 1. SUB-COMPONENT: THE FORM ---
 function SettingsForm({ initialData }: { initialData: Doc<"settings"> }) {
   const updateSettings = useMutation(api.settings.updateSettings);
 
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [form, setForm] = useState({
     overridePin: initialData.overridePin || "",
     gpsRadius: initialData.gpsRadius || 50,
     wardName: initialData.wardName || "General Ward"
   });
 
-  const handleSave = async () => {
+  const executeUpdate = async () => {
     try {
       await updateSettings({
         id: initialData._id as Id<"settings">, 
@@ -22,9 +24,8 @@ function SettingsForm({ initialData }: { initialData: Doc<"settings"> }) {
         gpsRadius: form.gpsRadius,
         wardName: form.wardName,
       });
-      alert("Ward Configuration Updated.");
-    } catch {
-      alert("Update failed. Check permissions.");
+    } catch (err) {
+      console.error("Update failed", err);
     }
   };
 
@@ -44,7 +45,6 @@ function SettingsForm({ initialData }: { initialData: Doc<"settings"> }) {
             value={form.overridePin}
             onChange={(e) => setForm({...form, overridePin: e.target.value})}
           />
-          <p className="help-text">Used by Head Nurse for manual Gatekeeper bypass.</p>
         </div>
 
         <div className="setting-item">
@@ -72,10 +72,21 @@ function SettingsForm({ initialData }: { initialData: Doc<"settings"> }) {
           />
         </div>
         
-        <button className="save-settings-btn" onClick={handleSave}>
+        {/* Trigger the Modal */}
+        <button className="save-settings-btn" onClick={() => setIsConfirmModalOpen(true)}>
           Apply Changes
         </button>
       </section>
+
+      {/* Confirm  Modal */}
+      <ConfirmModal 
+        isOpen={isConfirmModalOpen}
+        title="Update Ward Configuration?"
+        message="This will update security protocols hospital-wide. Proceed?"
+        confirmText="Update Settings"
+        onConfirm={executeUpdate}
+        onCancel={() => setIsConfirmModalOpen(false)}
+      />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useEffect, useState } from "react";
 import type { Id } from "../../convex/_generated/dataModel";
+import EmergencyResolveModal from "../components/ui/EmergencyResolveModal"; 
 import "../styles/emergency.css";
 
 interface EmergencyAlert {
@@ -16,30 +17,24 @@ interface EmergencyAlert {
 }
 
 export default function EmergencyHub() {
-  // 1. Fetch Active SOS Signals
   const activeEmergencies = useQuery(api.emergencies.getActiveEmergencies) as EmergencyAlert[] | undefined;
   const resolve = useMutation(api.emergencies.resolveEmergency);
 
-  // 2. ⏱️ REAL-TIME CLOCK STATE
+  // --- STATE ---
   const [now, setNow] = useState(() => Date.now());
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEmergency, setSelectedEmergency] = useState<EmergencyAlert | null>(null);
 
-  // 3. Update 'now' every second to make the timers tick up live
   useEffect(() => {
-    const timer = setInterval(() => {
-      setNow(Date.now());
-    }, 1000);
+    const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // 4. AUDIO ALERT LOGIC
   useEffect(() => {
     if (activeEmergencies && activeEmergencies.length > 0) {
       const alarm = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
       alarm.loop = true;
-      alarm.play().catch(() => {
-        console.log("Audio waiting for user interaction to enable.");
-      });
-      
+      alarm.play().catch(() => console.log("Audio waiting for interaction."));
       return () => {
         alarm.pause();
         alarm.currentTime = 0;
@@ -47,11 +42,23 @@ export default function EmergencyHub() {
     }
   }, [activeEmergencies]);
 
-  // 5.  RESOLUTION HANDLER
-  const handleResolve = async (id: Id<"emergencies">) => {
-    const notes = window.prompt("Resolution Notes (e.g., 'Stabilized'):");
-    if (notes) {
-      await resolve({ emergencyId: id, notes });
+  // --- HANDLERS ---
+  
+  //  Opens the modal instead of window.prompt
+  const handleResolveClick = (alert: EmergencyAlert) => {
+    setSelectedEmergency(alert);
+    setIsModalOpen(true);
+  };
+
+  //  Actually executes the mutation from the modal
+  const handleConfirmResolve = async (notes: string) => {
+    if (selectedEmergency) {
+      await resolve({ 
+        emergencyId: selectedEmergency._id, 
+        notes: notes || "Resolved by Head Nurse" 
+      });
+      setIsModalOpen(false);
+      setSelectedEmergency(null);
     }
   };
 
@@ -73,14 +80,11 @@ export default function EmergencyHub() {
 
       <main className="hub-content">
         {!activeEmergencies ? (
-          <div className="empty-state">
-            <p>Connecting to Sentryx Emergency Grid...</p>
-          </div>
+          <div className="empty-state"><p>Connecting to Sentryx Emergency Grid...</p></div>
         ) : activeEmergencies.length === 0 ? (
           <div className="empty-state">
             <div className="radar-circle"></div>
             <p>Scanning ward for distress signals...</p>
-            <span className="last-scan">System: Nominal</span>
           </div>
         ) : (
           <div className="alerts-grid">
@@ -88,9 +92,7 @@ export default function EmergencyHub() {
               <div key={alert._id} className="emergency-card">
                 <div className="alert-top">
                   <span className="sos-label">🚨 SOS TRIGGERED</span>
-                  <span className="alert-time">
-                    {Math.floor((now - alert._creationTime) / 1000)}s ago
-                  </span>
+                  <span className="alert-time">{Math.floor((now - alert._creationTime) / 1000)}s ago</span>
                 </div>
                 
                 <div className="alert-main">
@@ -98,7 +100,6 @@ export default function EmergencyHub() {
                     <label>LOCATION</label>
                     <h2 className="room-display">{alert.roomNumber}</h2>
                   </div>
-                  
                   <div className="data-group">
                     <label>REQUESTING STAFF</label>
                     <p className="nurse-display">{alert.nurseName}</p>
@@ -106,7 +107,7 @@ export default function EmergencyHub() {
                 </div>
 
                 <button 
-                  onClick={() => handleResolve(alert._id)} 
+                  onClick={() => handleResolveClick(alert)} 
                   className="resolve-btn"
                 >
                   ACKNOWLEDGE & RESOLVE
@@ -116,6 +117,14 @@ export default function EmergencyHub() {
           </div>
         )}
       </main>
+
+      {/*  THE MODAL INSTANCE */}
+      <EmergencyResolveModal 
+        isOpen={isModalOpen}
+        roomNumber={selectedEmergency?.roomNumber || ""}
+        onConfirm={handleConfirmResolve}
+        onCancel={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
