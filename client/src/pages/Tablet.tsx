@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import type { Id } from "../../convex/_generated/dataModel";
+import type { Doc, Id } from "../../convex/_generated/dataModel";
+import ConfirmModal from "../components/ui/ConfirmModal";
 import "../styles/tablet.css";
 
 export default function Tablet() {
@@ -28,6 +29,11 @@ export default function Tablet() {
   const [showAddMed, setShowAddMed] = useState(false);
   const [newMed, setNewMed] = useState({ name: "", dosage: "", frequency: "1x daily", totalDoses: 1 });
   const [handoverNote, setHandoverNote] = useState("");
+  
+  // Modal States
+  const [isSosModalOpen, setIsSosModalOpen] = useState(false);
+  const [isMedModalOpen, setIsMedModalOpen] = useState(false);
+  const [pendingMed, setPendingMed] = useState<Doc<"medications"> | null>(null);
 
   const selectedPatient = patients?.find(p => p._id === selectedPatientId);
 
@@ -87,12 +93,22 @@ export default function Tablet() {
     setShowAddMed(false);
   };
 
-  const handleSOS = async () => {
+  // Logic to execute the SOS after confirmation
+  const confirmSOS = async () => {
     if (!selectedPatient || !user) return;
-    if (window.confirm(`Trigger SOS for Room ${selectedPatient.roomNumber}?`)) {
-      await triggerSOS({ patientId: selectedPatient._id, nurseId: user._id });
-      alert("SOS Signal Broadcasted! 🚨");
-    }
+    await triggerSOS({ patientId: selectedPatient._id, nurseId: user._id });
+  };
+
+  // Logic to open Med Modal
+  const handleMedLogClick = (med: Doc<"medications">) => {
+    setPendingMed(med);
+    setIsMedModalOpen(true);
+  };
+
+  // Logic to execute Med Log after confirmation
+  const confirmMedAdmin = async () => {
+    if (!pendingMed || !user) return;
+    await administer({ medId: pendingMed._id, nurseId: user._id });
   };
 
   const sortedMeds = meds ? [...meds].sort((a, b) => {
@@ -133,10 +149,10 @@ export default function Tablet() {
                 <h1>{selectedPatient.name}</h1>
                 <p className="medical-history"><strong>History:</strong> {selectedPatient.medicalHistory}</p>
               </div>
-              <button className="sos-btn" onClick={handleSOS}>🚨 TRIGGER SOS</button>
+              <button className="sos-btn" onClick={() => setIsSosModalOpen(true)}>🚨 TRIGGER SOS</button>
             </header>
 
-            {/*  HEAD NURSE RESPONSE BANNER */}
+            {/* HEAD NURSE RESPONSE BANNER */}
             {latestEmergency?.status === "resolved" && latestEmergency.resolutionNotes && (
               <div className="emergency-response-banner">
                 <div className="response-icon">💬</div>
@@ -176,7 +192,7 @@ export default function Tablet() {
               </button>
             </section>
 
-            {/*  MEDICATION RECORD  SECTION */}
+            {/* MEDICATION RECORD  SECTION */}
             <section className="meds-section">
               <div className="section-header">
                 <h3>Medication (MAR)</h3>
@@ -227,7 +243,7 @@ export default function Tablet() {
                         ) : (
                           <button 
                             className="log-dose-btn" 
-                            onClick={() => administer({ medId: med._id, nurseId: user._id })}
+                            onClick={() => handleMedLogClick(med)}
                           >
                             Log Dose
                           </button>
@@ -240,37 +256,57 @@ export default function Tablet() {
             </section>
 
             {/* CLINICAL TIMELINE */}
-<section className="vitals-history-section">
-  <h3>Clinical Timeline</h3>
-  <table className="history-table">
-    <thead>
-      <tr>
-        <th>Time</th>
-        <th>Event</th>
-        <th>Value</th>
-        <th>Staff</th>
-      </tr>
-    </thead>
-    <tbody>
-      {timeline?.map((event) => (
-        <tr key={event.id}>
-          <td>
-            {new Date(event.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-          </td>
-          <td>
-            <span className={`type-tag ${(event.type || event.label || "").toLowerCase()}`}>
-              {event.type || event.label}
-            </span>
-          </td>
-          <td><strong>{event.value}</strong></td>
-          <td>
-            <code>{event.staff}</code>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</section>
+            <section className="vitals-history-section">
+              <h3>Clinical Timeline</h3>
+              <table className="history-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Event</th>
+                    <th>Value</th>
+                    <th>Staff</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {timeline?.map((event) => (
+                    <tr key={event.id}>
+                      <td>
+                        {new Date(event.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </td>
+                      <td>
+                        <span className={`type-tag ${(event.type || event.label || "").toLowerCase()}`}>
+                          {event.type || event.label}
+                        </span>
+                      </td>
+                      <td><strong>{event.value}</strong></td>
+                      <td>
+                        <code>{event.staff}</code>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+
+            {/* --- MODAL INSTANCES --- */}
+            <ConfirmModal 
+              isOpen={isSosModalOpen}
+              title="Confirm Emergency SOS"
+              message={`This will trigger a ward-wide emergency alert for ${selectedPatient.name} in Room ${selectedPatient.roomNumber}. Proceed?`}
+              confirmText="TRIGGER SOS"
+              type="danger"
+              onConfirm={confirmSOS}
+              onCancel={() => setIsSosModalOpen(false)}
+            />
+
+            <ConfirmModal 
+              isOpen={isMedModalOpen}
+              title="Confirm Medication"
+              message={`Are you sure you want to log a dose of ${pendingMed?.name} (${pendingMed?.dosage}) for ${selectedPatient.name}?`}
+              confirmText="Log Dose"
+              onConfirm={confirmMedAdmin}
+              onCancel={() => setIsMedModalOpen(false)}
+            />
 
           </div>
         ) : (

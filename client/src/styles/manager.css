@@ -521,9 +521,24 @@ input:focus { border-color: var(--color-primary); outline: none; }
   transform: scale(1.1);
 }
 
-/* Ensure 'crisis' (sick leave) pulse is active */
-.shift-cell.crisis {
-  background: #fee2e2 !important;
+/* Diagonal red stripes for sick leave cells */
+.shift-cell.sick-leave-highlight {
+  background: repeating-linear-gradient(
+    45deg,
+    #fee2e2,
+    #fee2e2 10px,
+    #fecaca 10px,
+    #fecaca 20px
+  ) !important;
   border: 2px solid #ef4444 !important;
-  animation: pulse-red 2s infinite;
+  position: relative;
+}
+
+/* Adding a small alert icon inside the cell */
+.shift-cell.sick-leave-highlight::after {
+  content: '🚨';
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  font-size: 0.6rem;
 }

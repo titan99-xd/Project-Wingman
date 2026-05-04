@@ -79,6 +79,11 @@ export default function Header({ isClinical }: { isClinical?: boolean }) {
                 <span className="nav-text">Security</span>
                 <span className="nav-indicator"></span>
               </Link>
+
+              <Link to="/Settings" className={`nav-link ${isActive('/Settings') ? 'active' : ''}`}>
+                <span className="nav-text">Settings</span>
+                <span className="nav-indicator"></span>
+              </Link>
             </>
           )}
 
@@ -101,7 +106,7 @@ export default function Header({ isClinical }: { isClinical?: boolean }) {
               </button>
             </div>
           ) : (
-            <Link to="/login" className="login-nav-link">Staff Login</Link>
+            <Link to="/login" className="login-nav-link"> Login</Link>
           )}
 
           {/* MOBILE MENU BUTTON */}

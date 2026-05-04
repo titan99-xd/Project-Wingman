@@ -129,31 +129,23 @@ export const reportSick = mutation({
 });
 
 /**
- *  6. GET EMERGENCY ABSENCES 
- * The "Brain" of the Manager Alert Banner.
+ * 6. GET EMERGENCY ABSENCES 
  */
 export const getEmergencyAbsences = query({
   handler: async (ctx) => {
-    const today = new Date().toISOString().split("T")[0];
-    
-    // 1. Fetch all flagged shifts for today
     const flaggedShifts = await ctx.db
       .query("shifts")
-      .filter((q) => 
-        q.and(
-          q.eq(q.field("date"), today),
-          q.eq(q.field("status"), "flagged")
-        )
-      )
+      .filter((q) => q.eq(q.field("leaveRequested"), true))
       .collect();
 
-    // 2. Enrich the data by looking up the User associated with each shift
+    if (flaggedShifts.length === 0) return [];
+
     const absencesWithNames = await Promise.all(
       flaggedShifts.map(async (shift) => {
         const nurse = await ctx.db.get(shift.nurseId);
         return {
           ...shift,
-          nurseName: nurse?.name || "Unknown Staff Member",
+          nurseName: nurse?.name || "Staff Member",
         };
       })
     );
