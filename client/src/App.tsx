@@ -80,7 +80,7 @@ function LayoutWrapper() {
     <div className="app-container">
       <ScrollToTop />
       
-      {!isGatekeeperOrLogin && <Header isClinical={isAppRoute} />}
+      {!isGatekeeperOrLogin && <Header/>}
 
       {!isAppRoute && <ContactButton />}
 
@@ -90,7 +90,6 @@ function LayoutWrapper() {
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          // Inside your App.tsx routes:
           <Route path="/settings" element={<Settings />} />
 
           {/* --- AUTHENTICATION FLOW --- */}
