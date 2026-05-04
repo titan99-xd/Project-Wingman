@@ -3,12 +3,12 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useNavigate } from "react-router-dom";
 import type { Id } from "../../convex/_generated/dataModel"; 
+import ConfirmModal from "../components/ui/ConfirmModal"; //
+import SickLeaveModal from "../components/ui/SickLeaveConfirmModal"; 
 import "../styles/gatekeeper.css";
 
-// ---  (Haversine Formula) ---
-// Calculates distance between two points in meters
 const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-  const R = 6371000; // Earth's radius in meters
+  const R = 6371000;
   const dLat = (lat2 - lat1) * (Math.PI / 180);
   const dLon = (lon2 - lon1) * (Math.PI / 180);
   const a = 
@@ -29,10 +29,18 @@ export default function Gatekeeper() {
   const schedule = useQuery(api.staffing.getNurseSchedule, user?._id ? { nurseId: user._id } : "skip");
   const reportSick = useMutation(api.staffing.reportSick);
 
+  // ---  MODAL STATES ---
   const [isVerifying, setIsVerifying] = useState(false);
   const [showPin, setShowPin] = useState(false);
   const [pinInput, setPinInput] = useState("");
   const [selectedShifts, setSelectedShifts] = useState<Id<"shifts">[]>([]);
+  
+  const [modalState, setModalState] = useState({
+    isSickOpen: false,
+    isSuccessOpen: false,
+    isErrorOpen: false,
+    errorMessage: ""
+  });
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -46,11 +54,11 @@ export default function Gatekeeper() {
   };
 
   const runLocationCheck = () => {
-    if (!settings) return alert("System settings not loaded.");
+    if (!settings) return;
     setIsVerifying(true);
 
     if (!navigator.geolocation) {
-      alert("Geolocation not supported.");
+      setModalState(p => ({ ...p, isErrorOpen: true, errorMessage: "Geolocation is not supported by this device." }));
       setIsVerifying(false);
       return;
     }
@@ -58,40 +66,26 @@ export default function Gatekeeper() {
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude, longitude } = pos.coords;
-        
-        // 🛰️ CALCULATE LIVE DISTANCE
-        const distance = getDistance(
-          latitude, 
-          longitude, 
-          settings.hospitalLat, 
-          settings.hospitalLong
-        );
+        const distance = getDistance(latitude, longitude, settings.hospitalLat, settings.hospitalLong);
 
-        //  VERIFY AGAINST SETTINGS RADIUS
         if (distance <= settings.gpsRadius) {
           try {
             if (user?._id && todayShift) {
-              await checkIn({ 
-                nurseId: user._id, 
-                shiftId: todayShift._id, 
-                lat: latitude, 
-                lng: longitude 
-              });
+              await checkIn({ nurseId: user._id, shiftId: todayShift._id, lat: latitude, lng: longitude });
             }
             finalizeCheckIn();
           } catch (error) {
-            console.error("Mutation failed:", error);
+            console.error("Check-in mutation failed:", error);
             setIsVerifying(false);
           }
         } else {
-          // OUT OF BOUNDS - Trigger PIN Override
-          alert(`Out of Bounds: You are ${Math.round(distance)}m from the ward. Master PIN required.`);
+          setModalState(p => ({ ...p, isErrorOpen: true, errorMessage: `Out of Bounds: You are ${Math.round(distance)}m from the ward.` }));
           setIsVerifying(false);
           setShowPin(true);
         }
       },
       () => { 
-        alert("GPS Signal Failed. Using Manual PIN.");
+        setModalState(p => ({ ...p, isErrorOpen: true, errorMessage: "GPS Signal Failed. Please use Manual PIN override." }));
         setIsVerifying(false);
         setShowPin(true);
       },
@@ -103,7 +97,7 @@ export default function Gatekeeper() {
     if (pinInput === settings?.overridePin) {
       finalizeCheckIn();
     } else {
-      alert("Invalid Security PIN.");
+      setModalState(p => ({ ...p, isErrorOpen: true, errorMessage: "Invalid Security PIN. Access Denied." }));
     }
   };
 
@@ -116,15 +110,12 @@ export default function Gatekeeper() {
     }
   };
 
-  const handleSickLeave = async () => {
-    if (selectedShifts.length === 0) return alert("Select shifts first.");
-    const reason = window.prompt(`Reporting ${selectedShifts.length} absences. Reason:`);
-    if (reason) {
-      await reportSick({ shiftIds: selectedShifts, nurseId: user._id, reason });
-      alert("Reported. Head Nurse notified.");
-      setSelectedShifts([]);
-      handleLogout();
-    }
+  // 🟢 Sick Leave Logic
+  const executeSickReport = async (reason: string) => {
+    if (!reason) return;
+    await reportSick({ shiftIds: selectedShifts, nurseId: user._id, reason });
+    setModalState(p => ({ ...p, isSickOpen: false, isSuccessOpen: true }));
+    setSelectedShifts([]);
   };
 
   if (!user || !user._id) {
@@ -185,7 +176,7 @@ export default function Gatekeeper() {
 
           <button 
             className={`sick-leave-btn ${selectedShifts.length > 0 ? 'active' : ''}`} 
-            onClick={handleSickLeave}
+            onClick={() => selectedShifts.length > 0 && setModalState(p => ({ ...p, isSickOpen: true }))}
           >
             🤒 Report {selectedShifts.length > 0 ? `${selectedShifts.length} Absences` : "Emergency Absence"}
           </button>
@@ -193,7 +184,6 @@ export default function Gatekeeper() {
 
         <div className="gatekeeper-card">
           <div className="security-icon">{isVerifying ? "🛰️" : "🛡️"}</div>
-          {/*  DYNAMIC WARD NAME */}
           <h2>{settings?.wardName || "Ward"} Access</h2>
           <p className="user-label">Logged in as: <strong>{user.name}</strong></p>
           <p className="gatekeeper-subtext">
@@ -227,6 +217,37 @@ export default function Gatekeeper() {
           )}
         </div>
       </div>
+
+      {/* --- 🟢 MODALS --- */}
+
+      {/* Sick Leave Reason Modal */}
+      <SickLeaveModal 
+        isOpen={modalState.isSickOpen}
+        roomNumber="Absence Report"
+        onConfirm={executeSickReport}
+        onCancel={() => setModalState(p => ({ ...p, isSickOpen: false }))}
+      />
+
+      {/* Success Modal */}
+      <ConfirmModal 
+        isOpen={modalState.isSuccessOpen}
+        title="Reported"
+        message="Your absence has been logged. The Head Nurse has been notified for roster reassignment."
+        confirmText="Acknowledged"
+        onConfirm={handleLogout}
+        onCancel={handleLogout}
+      />
+
+      {/* Error Modal (GPS/PIN) */}
+      <ConfirmModal 
+        isOpen={modalState.isErrorOpen}
+        title="Security Alert"
+        message={modalState.errorMessage}
+        confirmText="Try Again"
+        type="danger"
+        onConfirm={() => setModalState(p => ({ ...p, isErrorOpen: false }))}
+        onCancel={() => setModalState(p => ({ ...p, isErrorOpen: false }))}
+      />
     </div>
   );
 }
