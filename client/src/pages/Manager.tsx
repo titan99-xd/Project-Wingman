@@ -33,7 +33,7 @@ export default function Manager() {
   });
 
   const [formData, setFormData] = useState({
-    name: "", age: "", sex: "Male" as "Male" | "Female" | "Other", roomNumber: "", medicalHistory: "", status: "Stable", 
+    name: "", age: "", sex: "Male" as "Male" | "Female" | "Other", roomNumber: "", medicalHistory: "", status: "Stable" as "Stable" | "Unstable" | "Critical", 
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -132,6 +132,11 @@ export default function Manager() {
                 <div className="form-group"><label>Sex</label>
                   <select value={formData.sex} onChange={(e) => setFormData({...formData, sex: e.target.value as "Male" | "Female" | "Other"})}>
                     <option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option>
+                  </select>
+                </div>
+                 <div className="form-group"><label>Condition</label>
+                  <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value as "Stable" | "Unstable" | "Critical"})}>
+                    <option value="Stable">Stable</option><option value="Unstable">Unstable</option><option value="Critical">Critical</option>
                   </select>
                 </div>
                 <div className="form-group"><label>Room #</label><input required type="text" value={formData.roomNumber} onChange={(e) => setFormData({...formData, roomNumber: e.target.value})} /></div>
