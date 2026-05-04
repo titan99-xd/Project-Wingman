@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import sentryxLogo from '../../assets/sentryx_logo.png'
 import '../../styles/header.css';
 
-export default function Header({ isClinical }: { isClinical?: boolean }) {
+export default function Header(){
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const location = useLocation()
